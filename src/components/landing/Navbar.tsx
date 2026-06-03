@@ -1,6 +1,6 @@
 'use client';
 
-import { navLinks } from '@/data/landing';
+import { navLinks, portalUrl } from '@/data/landing';
 import { useState } from 'react';
 import { Logo } from './Logo';
 import { DesktopNavItem } from './navigation/DesktopNavItem';
@@ -21,12 +21,22 @@ export function Navbar() {
           ))}
         </div>
 
-        <a
-          className="btn-skew hidden shrink-0 bg-neon px-3 py-2 font-sport text-sm font-black text-black transition hover:scale-105 active:scale-95 sm:px-6 sm:text-lg xl:inline-flex"
-          href="#contacto"
-        >
-          <span>QUIERO ENTRENAR</span>
-        </a>
+        <div className="hidden shrink-0 items-center gap-3 xl:flex">
+          <a
+            className="border border-white/25 bg-white/5 px-4 py-2 font-sport text-sm font-black uppercase tracking-widest text-white transition hover:border-x-neon hover:bg-x-neon hover:text-black"
+            href={portalUrl}
+            rel="noreferrer"
+            target="_blank"
+          >
+            LOGIN PORTAL
+          </a>
+          <a
+            className="btn-skew bg-neon px-3 py-2 font-sport text-sm font-black text-black transition hover:scale-105 active:scale-95 sm:px-6 sm:text-lg"
+            href="#contacto"
+          >
+            <span>QUIERO ENTRENAR</span>
+          </a>
+        </div>
 
         <button
           aria-expanded={isOpen}

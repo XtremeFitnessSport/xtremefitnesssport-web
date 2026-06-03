@@ -1,4 +1,4 @@
-import { navLinks } from '@/data/landing';
+import { navLinks, portalUrl } from '@/data/landing';
 import Link from 'next/link';
 
 type MobileNavMenuProps = {
@@ -38,6 +38,15 @@ export function MobileNavMenu({ onNavigate }: MobileNavMenuProps) {
             ) : null}
           </div>
         ))}
+        <a
+          className="mt-2 border border-white/25 bg-white/5 px-5 py-3 text-center text-white transition hover:border-x-neon hover:bg-x-neon hover:text-black"
+          href={portalUrl}
+          onClick={onNavigate}
+          rel="noreferrer"
+          target="_blank"
+        >
+          LOGIN PORTAL
+        </a>
         <Link className="btn-skew mt-2 bg-x-neon px-5 py-3 text-center text-black" href="/#contacto" onClick={onNavigate}>
           <span>QUIERO ENTRENAR</span>
         </Link>

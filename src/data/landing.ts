@@ -1,5 +1,7 @@
 import { images } from '@/assets/images';
 
+export const portalUrl = process.env.NEXT_PUBLIC_PORTAL_URL ?? 'https://xtremefitnesssport.web.app';
+
 export const navLinks = [
   { label: 'INICIO', href: '/#inicio' },
   { label: 'PROGRAMAS', href: '/#programas' },
@@ -153,39 +155,75 @@ export const xtremePlans = [
 export const classSchedule = [
   {
     day: 'LUN - VIE',
-    focus: 'Horario normal',
+    focus: 'Horario general',
     time: '5:00 AM - 10:00 PM',
-    intensity: 'Semipersonalizado',
+    intensity: 'Todos',
   },
   {
-    day: '10:00 AM',
-    focus: 'Atletas personalizados',
-    time: 'Horario apartado para peleadores, futbolistas y alto rendimiento',
-    intensity: 'Elite',
-  },
-  {
-    day: 'HOMBRES',
-    focus: 'Circuito Xtreme',
-    time: '1 vez por semana con confirmación de asistencia',
-    intensity: 'Circuito',
-  },
-  {
-    day: 'MUJERES',
-    focus: 'Circuito Xtreme',
-    time: '2 veces por semana con confirmación de asistencia',
-    intensity: 'Circuito',
-  },
-  {
-    day: 'BATIDOS',
-    focus: 'Confirmación de asistencia',
-    time: 'Organización de cupos y soporte para alumnos activos',
-    intensity: 'Control',
-  },
-  {
-    day: 'SÁBADO',
+    day: 'SÁBADOS',
     focus: 'Entrenamiento y evaluaciones',
     time: '6:00 AM - 2:00 PM',
     intensity: 'Programado',
+  },
+  {
+    day: 'DOMINGOS',
+    focus: 'Descanso Xtreme',
+    time: 'Sin atención',
+    intensity: 'Descanso',
+  },
+];
+
+export const studentSchedule = {
+  title: 'Horario estudiantes',
+  label: 'Desde junio',
+  description: 'Bloques de entrenamiento a menor precio para estudiantes.',
+  hours: ['10:00 AM', '11:00 AM', '12:00 M', '1:00 PM', '2:00 PM'],
+};
+
+export const weeklyPlanSchedules = [
+  {
+    group: 'Mujeres',
+    plan: 'Plan Strong',
+    days: [
+      { day: 'Lunes', focus: 'Tren superior' },
+      { day: 'Martes', focus: 'Tren inferior' },
+      { day: 'Miércoles', focus: 'Descanso' },
+      { day: 'Jueves', focus: 'Full body e intensidad' },
+      { day: 'Viernes', focus: 'Tren inferior' },
+    ],
+  },
+  {
+    group: 'Mujeres',
+    plan: 'Súper Strong y Premium',
+    days: [
+      { day: 'Lunes', focus: 'Tren inferior' },
+      { day: 'Martes', focus: 'Tren superior' },
+      { day: 'Miércoles', focus: 'Tren inferior' },
+      { day: 'Jueves', focus: 'Full body e intensidad' },
+      { day: 'Viernes', focus: 'Tren inferior' },
+    ],
+  },
+  {
+    group: 'Hombres',
+    plan: 'Plan Strong',
+    days: [
+      { day: 'Lunes', focus: 'Tren superior' },
+      { day: 'Martes', focus: 'Tren inferior y abs' },
+      { day: 'Miércoles', focus: 'Descanso' },
+      { day: 'Jueves', focus: 'Tren superior' },
+      { day: 'Viernes', focus: 'Tren inferior y abs' },
+    ],
+  },
+  {
+    group: 'Hombres',
+    plan: 'Súper Strong y Premium',
+    days: [
+      { day: 'Lunes', focus: 'Tren superior' },
+      { day: 'Martes', focus: 'Tren inferior y abs' },
+      { day: 'Miércoles', focus: 'Intensidad' },
+      { day: 'Jueves', focus: 'Tren superior' },
+      { day: 'Viernes', focus: 'Tren inferior y abs' },
+    ],
   },
 ];
 
@@ -213,17 +251,22 @@ export const coaches = [
 export const performancePrograms = [
   {
     title: 'Personas cotidianas',
-    description: 'Entrenamiento progresivo para quienes buscan verse mejor, sentirse más fuertes y entrenar con orden.',
+    description:
+      'Entrenamiento progresivo para quienes quieren verse mejor, sentirse más fuertes y construir disciplina sin improvisar.',
   },
   {
     title: 'Personas con complejidades',
-    description: 'Adaptación de cargas, ejercicios y ritmo según condición, experiencia y respuesta del alumno.',
+    description:
+      'Ajustamos cargas, ejercicios, descansos y ritmo según condición, experiencia, técnica y respuesta del alumno.',
   },
   {
     title: 'Atletas de alto rendimiento',
-    description: 'Bloques personalizados en horarios apartados para peleadores, futbolistas y deportistas competitivos.',
+    description:
+      'Bloques personalizados en horarios apartados para peleadores, futbolistas y deportistas que necesitan exigencia específica.',
   },
 ];
+
+export const performanceAdjustments = ['Carga correcta', 'Ritmo medido', 'Acompañamiento real'];
 
 export const fitnessTips = [
   {
