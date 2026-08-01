@@ -135,7 +135,7 @@ export const xtremePlans = [
     price: 'S/200',
     priceLabel: 'mensual',
     accent: 'premium',
-    policy: 'Promoción de este mes. Antes S/250.',
+    policy: 'Beneficios sujetos a disponibilidad y condiciones del plan.',
     previousPrice: 'S/250',
     promotionsTitle: 'Beneficios Plan Premium',
     promotions: [
@@ -381,8 +381,7 @@ export const gymLocations = [
     schedule: 'Lun - Vie: 5:00 AM - 10:00 PM / Sáb: 6:00 AM - 2:00 PM',
     phone: '932 471 911',
     email: 'fernandoledesma76@gmail.com',
-    mapUrl:
-      'https://www.google.com/maps/search/?api=1&query=Las%20Dalias%20140%20cuadra%202%20Los%20Olivos%20Urb.%20Los%20Jardines%20Tarapoto%20Peru%2022200',
+    mapUrl: 'https://maps.app.goo.gl/RLBKeGjDaJMQtAjs7',
     steps: [
       'Dirígete a la Urb. Los Jardines en Tarapoto.',
       'Ubica Las Dalias 140, cuadra 2 Los Olivos.',

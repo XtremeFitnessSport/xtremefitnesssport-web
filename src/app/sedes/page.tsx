@@ -7,14 +7,14 @@ import { Navbar } from '@/components/landing/Navbar';
 export const metadata: Metadata = {
   title: 'Sedes y ubicación',
   description:
-    'Encuentra la sede de Xtreme Fitness Tarapoto en Las Dalias 140, Urb. Los Jardines. Teléfono, correo y ruta por Google Maps.',
+    'Encuentra las sedes de Xtreme Fitness en Tarapoto y Pucallpa. Consulta dirección, contacto, horarios y rutas en Google Maps.',
   alternates: {
     canonical: '/sedes/',
   },
   openGraph: {
-    title: 'Sedes y ubicación | Xtreme Fitness Tarapoto',
+    title: 'Sedes y ubicación | Xtreme Fitness',
     description:
-      'Cómo llegar a Xtreme Fitness Tarapoto: dirección, teléfono, correo y ruta por Google Maps.',
+      'Cómo llegar a Xtreme Fitness Tarapoto y a la nueva sede de Pucallpa.',
     url: '/sedes/',
   },
 };

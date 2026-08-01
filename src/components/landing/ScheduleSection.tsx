@@ -1,23 +1,69 @@
-import { classSchedule, studentSchedule, weeklyPlanSchedules } from '@/data/landing';
+'use client';
 
-export function ScheduleSection() {
+import { classSchedule, studentSchedule, weeklyPlanSchedules } from '@/data/landing';
+import { useGymLocation } from '@/context/GymLocationContext';
+import { getLocationContent } from '@/data/locationContent';
+import type {
+  ClassScheduleItem,
+  StudentSchedule,
+  WeeklyPlanSchedule,
+} from '@/services/publicWebsite';
+import { LocationSwitcher } from './LocationSwitcher';
+
+type ScheduleSectionProps = {
+  classItems?: ClassScheduleItem[];
+  student?: StudentSchedule;
+  weeklySchedules?: WeeklyPlanSchedule[];
+};
+
+export function ScheduleSection({ classItems, student, weeklySchedules }: ScheduleSectionProps) {
+  const { locationId } = useGymLocation();
+  const location = getLocationContent(locationId);
+  const pucallpaLaunchSchedule = [
+    { id: 'opening', day: 'SÁB 01 AGO', focus: 'Gran apertura Pucallpa', time: 'Confirma la hora por WhatsApp', intensity: 'APERTURA' },
+    { id: 'weekday', day: 'LUN – VIE', focus: 'Horario regular', time: 'Programación disponible en la sede', intensity: 'PRÓXIMO' },
+    { id: 'saturday', day: 'SÁBADOS', focus: 'Entrenamiento Xtreme', time: 'Agenda sujeta a confirmación', intensity: 'PRÓXIMO' },
+  ];
+  const availableClassSchedule = locationId === 'pucallpa'
+    ? pucallpaLaunchSchedule
+    : (classItems && classItems.length > 0 ? classItems : classSchedule);
+  const availableStudentSchedule = student ?? studentSchedule;
+  const availableWeeklySchedules = weeklySchedules && weeklySchedules.length > 0 ? weeklySchedules : weeklyPlanSchedules;
+
   return (
     <section className="bg-black px-4 py-20 sm:px-6 sm:py-28" id="horarios-clases">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-14 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div className="mb-14 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
-            <span className="font-playful text-xl text-x-neon sm:text-2xl">Agenda Xtreme</span>
+            <span className="font-playful text-xl text-x-neon sm:text-2xl">Agenda Xtreme · {location.city}</span>
             <h2 className="font-sport text-4xl font-extrabold uppercase leading-none sm:text-6xl md:text-7xl xl:text-8xl">
               HORARIOS Y <span className="text-x-neon">CLASES</span>
             </h2>
           </div>
-          <p className="max-w-xl border-l-2 border-x-neon pl-6 text-lg text-gray-400">
-            Entrena según tu semana. Cada día tiene un enfoque distinto para trabajar fuerza, cardio, core y resistencia.
-          </p>
+          <div className="flex max-w-xl flex-col items-start gap-5">
+            <p className="border-l-2 border-x-neon pl-6 text-lg text-gray-400">
+              {locationId === 'pucallpa'
+                ? 'La agenda de la nueva sede se está activando. Te mostramos la información confirmada y actualizaremos los bloques regulares aquí.'
+                : 'Entrena según tu semana. Cada día tiene un enfoque distinto para desarrollar fuerza, músculo y resistencia.'}
+            </p>
+            <LocationSwitcher />
+          </div>
         </div>
 
+        {location.openingLabel ? (
+          <div className="mb-8 overflow-hidden border border-x-neon bg-x-neon text-black">
+            <div className="grid items-center gap-4 px-5 py-5 sm:grid-cols-[1fr_auto] sm:px-8">
+              <div>
+                <span className="text-xs font-black uppercase tracking-[0.22em]">Nueva sede Xtreme Fitness</span>
+                <p className="break-words font-sport text-2xl font-black uppercase leading-none min-[390px]:text-3xl sm:text-5xl">{location.openingLabel}</p>
+              </div>
+              <a className="w-full bg-black px-4 py-3 text-center font-sport text-lg font-black text-white transition hover:scale-105 sm:w-auto sm:px-6 sm:text-xl" href={location.mapUrl} rel="noreferrer" target="_blank">VER UBICACIÓN →</a>
+            </div>
+          </div>
+        ) : null}
+
         <div className="grid gap-3 md:grid-cols-3">
-          {classSchedule.map((item) => (
+          {availableClassSchedule.map((item) => (
             <article className="neon-border-glow border border-white/10 bg-white/[0.03] p-6 transition-all" key={item.day}>
               <div className="mb-5 flex items-center justify-between gap-4">
                 <h3 className="font-sport text-3xl font-extrabold text-white sm:text-4xl">{item.day}</h3>
@@ -31,19 +77,19 @@ export function ScheduleSection() {
           ))}
         </div>
 
-        <div className="mt-4 border border-x-neon/40 bg-x-neon/10 p-5 sm:p-6">
+        {locationId === 'tarapoto' ? <div className="mt-4 border border-x-neon/40 bg-x-neon/10 p-5 sm:p-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <span className="skew-title inline-block bg-x-neon px-3 py-1 font-sport text-sm font-black uppercase tracking-[0.2em] text-black">
-                {studentSchedule.label}
+                {availableStudentSchedule.label}
               </span>
               <h3 className="mt-4 font-sport text-3xl font-extrabold uppercase text-white sm:text-4xl">
-                {studentSchedule.title}
+                {availableStudentSchedule.title}
               </h3>
-              <p className="mt-1 text-gray-400">{studentSchedule.description}</p>
+              <p className="mt-1 text-gray-400">{availableStudentSchedule.description}</p>
             </div>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
-              {studentSchedule.hours.map((hour) => (
+              {availableStudentSchedule.hours.map((hour) => (
                 <span
                   className="border border-x-neon/50 bg-black px-4 py-3 text-center font-sport text-xl font-extrabold text-x-neon"
                   key={hour}
@@ -53,9 +99,17 @@ export function ScheduleSection() {
               ))}
             </div>
           </div>
-        </div>
+        </div> : (
+          <div className="mt-4 grid gap-5 border border-white/10 bg-white/[0.03] p-6 md:grid-cols-[1fr_auto] md:items-center sm:p-8">
+            <div>
+              <p className="font-sport text-3xl font-black uppercase text-white sm:text-4xl">¿Quieres recibir el horario apenas se publique?</p>
+              <p className="mt-2 max-w-2xl text-gray-400">Escríbenos indicando “Pucallpa” y te enviaremos los bloques, planes y disponibilidad de la nueva sede.</p>
+            </div>
+            <a className="btn-skew bg-x-neon px-7 py-4 text-center font-sport text-xl font-black text-black" href={`https://wa.me/${location.whatsapp}?text=${encodeURIComponent('Hola, quiero recibir los horarios de Xtreme Fitness Pucallpa.')}`}><span>PEDIR HORARIOS</span></a>
+          </div>
+        )}
 
-        <div className="mt-12">
+        {locationId === 'tarapoto' ? <div className="mt-12">
           <div className="mb-6">
             <span className="font-playful text-xl text-x-neon sm:text-2xl">Distribución semanal</span>
             <h3 className="font-sport text-3xl font-extrabold uppercase text-white sm:text-5xl">
@@ -64,7 +118,7 @@ export function ScheduleSection() {
           </div>
 
           <div className="grid gap-4 lg:grid-cols-2">
-            {weeklyPlanSchedules.map((schedule) => (
+            {availableWeeklySchedules.map((schedule) => (
               <article className="border border-white/10 bg-white/[0.03] p-5 sm:p-6" key={`${schedule.group}-${schedule.plan}`}>
                 <div className="mb-5 flex flex-col gap-2 border-b border-white/10 pb-4 sm:flex-row sm:items-end sm:justify-between">
                   <div>
@@ -79,7 +133,7 @@ export function ScheduleSection() {
 
                     return (
                       <div
-                        className={`grid grid-cols-[105px_1fr] items-center gap-3 border px-4 py-3 ${
+                        className={`grid grid-cols-[82px_minmax(0,1fr)] items-center gap-3 border px-3 py-3 min-[390px]:grid-cols-[105px_minmax(0,1fr)] min-[390px]:px-4 ${
                           isRest ? 'border-white/10 bg-white/[0.02] text-gray-500' : 'border-x-neon/25 bg-black/35'
                         }`}
                         key={`${schedule.group}-${schedule.plan}-${item.day}`}
@@ -93,7 +147,7 @@ export function ScheduleSection() {
               </article>
             ))}
           </div>
-        </div>
+        </div> : null}
       </div>
     </section>
   );

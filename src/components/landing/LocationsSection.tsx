@@ -1,12 +1,16 @@
 'use client';
 
-import { gymLocations } from '@/data/landing';
-import { useState } from 'react';
+import { useGymLocation, type GymLocationId } from '@/context/GymLocationContext';
+import { getLocationContent, locationContent } from '@/data/locationContent';
 import { ContactIcon } from './ContactIcon';
 
 export function LocationsSection() {
-  const [activeLocationId, setActiveLocationId] = useState(gymLocations[0].id);
-  const activeLocation = gymLocations.find((location) => location.id === activeLocationId) ?? gymLocations[0];
+  const { locationId, setLocationId } = useGymLocation();
+  const activeLocation = getLocationContent(locationId);
+  const locations = Object.values(locationContent);
+  const steps = locationId === 'pucallpa'
+    ? ['Abre el pin oficial de Xtreme Fitness Pucallpa.', 'Activa la ruta desde tu ubicación actual.', 'Escríbenos por WhatsApp si necesitas una referencia adicional.']
+    : ['Dirígete a la Urb. Los Jardines en Tarapoto.', 'Ubica Las Dalias 140, cuadra 2 Los Olivos.', 'Busca el local de Xtreme Fitness y consulta por tu plan.'];
 
   return (
     <section className="relative overflow-hidden bg-black px-4 py-20 sm:px-6 sm:py-28" id="sedes">
@@ -26,8 +30,8 @@ export function LocationsSection() {
 
         <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
           <div className="space-y-4">
-            {gymLocations.map((location) => {
-              const isActive = location.id === activeLocationId;
+            {locations.map((location) => {
+              const isActive = location.id === locationId;
 
               return (
                 <button
@@ -38,12 +42,15 @@ export function LocationsSection() {
                       : 'relative z-0 scale-[0.96] border-white/10 bg-white/[0.03] opacity-45 blur-[1px] hover:opacity-80 hover:blur-0'
                   }`}
                   key={location.id}
-                  onClick={() => setActiveLocationId(location.id)}
+                  onClick={() => setLocationId(location.id as GymLocationId)}
                   type="button"
                 >
-                  <p className="font-playful text-xl text-x-neon">{location.district}</p>
-                  <h3 className="font-sport text-3xl font-extrabold text-white sm:text-4xl">{location.name}</h3>
-                  <p className="mt-2 text-sm text-gray-400">{location.reference}</p>
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="font-playful text-xl text-x-neon">{location.region}</p>
+                    <span className="rounded-full border border-x-neon/30 px-2 py-1 text-[10px] font-black tracking-widest text-x-neon">{location.status}</span>
+                  </div>
+                  <h3 className="font-sport text-3xl font-extrabold text-white sm:text-4xl">XTREME {location.city.toUpperCase()}</h3>
+                  <p className="mt-2 text-sm text-gray-400">{location.cityLine}</p>
                 </button>
               );
             })}
@@ -53,10 +60,11 @@ export function LocationsSection() {
             <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-x-neon/10 blur-3xl" />
             <div className="relative">
               <div className="mb-8">
-                <p className="font-playful text-xl text-x-neon sm:text-2xl">{activeLocation.district}</p>
-                <h3 className="font-sport text-4xl font-extrabold leading-none text-white sm:text-5xl md:text-7xl">
-                  {activeLocation.name}
+                <p className="font-playful text-xl text-x-neon sm:text-2xl">{activeLocation.region}</p>
+                <h3 className="break-words font-sport text-3xl font-extrabold leading-none text-white min-[390px]:text-4xl sm:text-5xl md:text-7xl">
+                  XTREME {activeLocation.city.toUpperCase()}
                 </h3>
+                {activeLocation.openingLabel ? <p className="mt-4 inline-block bg-x-neon px-3 py-2 font-sport text-xl font-black text-black">{activeLocation.openingLabel}</p> : null}
               </div>
 
               <div className="mb-8 grid gap-4 md:grid-cols-2">
@@ -66,7 +74,7 @@ export function LocationsSection() {
                 </div>
                 <div className="border-l-2 border-white/20 pl-5">
                   <p className="mb-1 font-sport text-xl font-extrabold text-white sm:text-2xl">HORARIO</p>
-                  <p className="text-gray-400">{activeLocation.schedule}</p>
+                  <p className="text-gray-400">{activeLocation.hours.join(' / ')}</p>
                 </div>
                 <div className="border-l-2 border-white/20 pl-5">
                   <p className="mb-1 font-sport text-xl font-extrabold text-white sm:text-2xl">TELÉFONO</p>
@@ -90,7 +98,7 @@ export function LocationsSection() {
               <div className="mb-10">
                 <p className="mb-4 font-sport text-xl font-extrabold text-x-neon sm:text-2xl">RUTA RÁPIDA</p>
                 <ol className="space-y-3">
-                  {activeLocation.steps.map((step, index) => (
+                  {steps.map((step, index) => (
                     <li className="flex gap-3 text-gray-300" key={step}>
                       <span className="font-sport text-xl font-extrabold text-x-neon">
                         {String(index + 1).padStart(2, '0')}
@@ -102,7 +110,7 @@ export function LocationsSection() {
               </div>
 
               <a
-                className="btn-xtreme inline-flex bg-x-neon px-7 py-3 font-sport text-xl font-extrabold text-black sm:px-10 sm:py-4 sm:text-2xl"
+                className="btn-xtreme flex w-full justify-center bg-x-neon px-4 py-3 text-center font-sport text-lg font-extrabold text-black sm:inline-flex sm:w-auto sm:px-10 sm:py-4 sm:text-2xl"
                 href={activeLocation.mapUrl}
                 rel="noreferrer"
                 target="_blank"

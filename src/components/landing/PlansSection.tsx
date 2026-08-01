@@ -1,25 +1,52 @@
 'use client';
 
 import { contactInfo, xtremePlans } from '@/data/landing';
+import type { MembershipOption as PublicMembershipOption, PromoCampaign, PublicPlan } from '@/services/publicWebsite';
 import { useRef, useState } from 'react';
 
 type XtremePlan = (typeof xtremePlans)[number];
-type MembershipOption = {
+type LocalMembershipOption = {
   period: string;
   price: string;
   isBase?: boolean;
 };
+type Plan = XtremePlan | PublicPlan;
+type MembershipOption = LocalMembershipOption | (PublicMembershipOption & { isBase?: boolean });
 
-function getMembershipOptions(plan: XtremePlan): MembershipOption[] {
-  const promoMemberships = plan.promotions.filter((promotion) => promotion.price.startsWith('S/'));
+function getPlanFeatures(plan: Plan) {
+  return 'benefits' in plan ? plan.benefits : plan.features;
+}
+
+function getPlanPromotions(plan: Plan): MembershipOption[] {
+  return 'membershipOptions' in plan ? plan.membershipOptions : plan.promotions;
+}
+
+function getPromotionLabel(membership: MembershipOption) {
+  return 'kind' in membership && membership.kind === 'beneficio' ? 'Beneficio' : membership.isBase ? 'Mensualidad' : 'Promoción';
+}
+
+function getMembershipOptions(plan: Plan): MembershipOption[] {
+  if ('membershipOptions' in plan && plan.membershipOptions.length > 0) {
+    return plan.membershipOptions.map((membership) => ({
+      ...membership,
+      isBase: membership.kind === 'mensualidad',
+    }));
+  }
+
+  const promoMemberships = 'promotions' in plan ? plan.promotions.filter((promotion) => promotion.price.startsWith('S/')) : [];
 
   return [{ period: '1 mes', price: `${plan.price} ${plan.priceLabel}`, isBase: true }, ...promoMemberships];
 }
 
-function buildPlanWhatsappHref(plan: XtremePlan, membership: MembershipOption) {
-  const features = plan.features.map((feature) => `✔️ ${feature}`).join('\n');
-  const promotions = plan.promotions.map((promotion) => `• ${promotion.period}: ${promotion.price}`).join('\n');
-  const previousPrice = plan.previousPrice ? `\n💥 Antes: ${plan.previousPrice}` : '';
+function buildPlanWhatsappHref(plan: Plan, membership: MembershipOption, showCampaignPrice: boolean) {
+  const features = getPlanFeatures(plan)
+    .map((feature) => `✔️ ${feature}`)
+    .join('\n');
+  const promotions = getPlanPromotions(plan)
+    .map((promotion) => `• ${promotion.period}: ${promotion.price}`)
+    .join('\n');
+  const previousPrice = showCampaignPrice && plan.previousPrice ? `\n💥 Antes: ${plan.previousPrice}` : '';
+  const promotionsTitle = 'promotionsTitle' in plan ? plan.promotionsTitle : 'Opciones de membresía';
   const message = `🔥 Hola Xtreme Fitness, quiero información del PLAN ${plan.name}.
 
 📌 Plan elegido: ${plan.name}
@@ -31,7 +58,7 @@ function buildPlanWhatsappHref(plan: XtremePlan, membership: MembershipOption) {
 Incluye:
 ${features}
 
-${plan.promotionsTitle}:
+${promotionsTitle}:
 ${promotions}
 
 ⚡ Quiero empezar con este plan.
@@ -40,20 +67,28 @@ Mensaje enviado desde la web.`;
   return `https://wa.me/${contactInfo.whatsapp}?text=${encodeURIComponent(message)}`;
 }
 
-export function PlansSection() {
-  const [activePlanId, setActivePlanId] = useState(xtremePlans[0].id);
+type PlansSectionProps = {
+  plans?: PublicPlan[];
+  campaign?: PromoCampaign;
+};
+
+export function PlansSection({ plans, campaign }: PlansSectionProps) {
+  const hasActiveCampaign = campaign?.active === true;
+  const availablePlans: Plan[] = plans && plans.length > 0 ? plans : xtremePlans;
+  const [selectedPlanId, setSelectedPlanId] = useState(availablePlans[0].id);
   const [selectedMemberships, setSelectedMemberships] = useState<Record<string, string>>({});
   const detailRef = useRef<HTMLElement>(null);
-  const activePlan = xtremePlans.find((plan) => plan.id === activePlanId) ?? xtremePlans[0];
+  const activePlanId = availablePlans.some((plan) => plan.id === selectedPlanId) ? selectedPlanId : availablePlans[0].id;
+  const activePlan = availablePlans.find((plan) => plan.id === activePlanId) ?? availablePlans[0];
   const isWhiteBar = activePlan.id === 'super-strong';
   const membershipOptions = getMembershipOptions(activePlan);
   const selectedMembershipPeriod = selectedMemberships[activePlan.id] ?? membershipOptions[0].period;
   const selectedMembership =
     membershipOptions.find((membership) => membership.period === selectedMembershipPeriod) ?? membershipOptions[0];
-  const planWhatsappHref = buildPlanWhatsappHref(activePlan, selectedMembership);
+  const planWhatsappHref = buildPlanWhatsappHref(activePlan, selectedMembership, hasActiveCampaign);
 
   function handlePlanSelect(planId: string) {
-    setActivePlanId(planId);
+    setSelectedPlanId(planId);
 
     if (window.matchMedia('(max-width: 1023px)').matches) {
       window.setTimeout(() => {
@@ -85,7 +120,7 @@ export function PlansSection() {
 
         <div className="grid items-start gap-8">
           <aside aria-label="Selecciona un plan" className="grid gap-3 min-[520px]:grid-cols-3 lg:gap-4">
-            {xtremePlans.map((plan) => {
+            {availablePlans.map((plan) => {
               const isActive = plan.id === activePlanId;
               const isPremium = plan.id === 'premium';
 
@@ -101,7 +136,7 @@ export function PlansSection() {
                   onClick={() => handlePlanSelect(plan.id)}
                   type="button"
                 >
-                  {isPremium ? (
+                  {isPremium && hasActiveCampaign ? (
                     <div className="absolute right-4 top-4 z-10 skew-title bg-x-neon px-3 py-1 font-sport text-xs font-black text-black">
                       PROMO
                     </div>
@@ -126,7 +161,7 @@ export function PlansSection() {
                         <p className="text-sm text-gray-400">{plan.days}</p>
                       </div>
                       <div>
-                        {plan.previousPrice ? (
+                        {hasActiveCampaign && plan.previousPrice ? (
                           <p className="font-sport text-lg font-extrabold text-white/80 line-through">
                             Antes {plan.previousPrice}
                           </p>
@@ -163,7 +198,7 @@ export function PlansSection() {
                     </span>
                   </div>
                 </div>
-                {activePlan.previousPrice ? (
+                {hasActiveCampaign && activePlan.previousPrice ? (
                   <p className="mt-3 font-sport text-xl font-extrabold text-white/80 line-through">
                     Antes {activePlan.previousPrice}
                   </p>
@@ -182,7 +217,7 @@ export function PlansSection() {
                   </div>
 
                   <ul className="space-y-3">
-                    {activePlan.features.map((feature) => (
+                    {getPlanFeatures(activePlan).map((feature) => (
                       <li className="flex items-start gap-3 text-sm font-semibold text-gray-200 sm:text-base md:text-lg" key={feature}>
                         <span className="mt-0.5 text-2xl leading-none text-x-neon">✓</span>
                         <span>{feature}</span>
@@ -222,7 +257,7 @@ export function PlansSection() {
                                 isSelected ? 'text-black/70' : 'text-gray-500'
                               }`}
                             >
-                              {membership.isBase ? 'Mensualidad' : 'Promoción'}
+                              {getPromotionLabel(membership)}
                             </span>
                             <span className="text-base font-bold sm:text-2xl">{membership.period}</span>
                           </span>

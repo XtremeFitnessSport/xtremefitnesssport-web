@@ -7,7 +7,7 @@ type MobileNavMenuProps = {
 
 export function MobileNavMenu({ onNavigate }: MobileNavMenuProps) {
   return (
-    <div className="border-t border-white/10 bg-black/95 px-4 py-5 xl:hidden">
+    <div className="max-h-[calc(100svh-4rem)] overflow-y-auto border-t border-white/10 bg-black/95 px-4 py-4 sm:max-h-[calc(100svh-5rem)] xl:hidden">
       <div className="grid gap-3 font-sport text-xl font-black text-white">
         {navLinks.map((link) => (
           <div className="border-b border-white/10 py-2" key={link.label}>

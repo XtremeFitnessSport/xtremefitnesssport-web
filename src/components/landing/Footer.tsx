@@ -1,6 +1,11 @@
-import { contactInfo, socialLinks } from "@/data/landing";
+'use client';
+
+import { socialLinks } from "@/data/landing";
+import { useGymLocation } from '@/context/GymLocationContext';
+import { getLocationContent } from '@/data/locationContent';
 import { ContactIcon } from "./ContactIcon";
 import { Logo } from "./Logo";
+import { LocationSwitcher } from './LocationSwitcher';
 
 function SocialIcon({ label }: { label: string }) {
   if (label === "FB") {
@@ -52,19 +57,28 @@ function SocialIcon({ label }: { label: string }) {
 }
 
 export function Footer() {
+  const { locationId } = useGymLocation();
+  const location = getLocationContent(locationId);
+
   return (
     <footer
       className="border-t border-white/5 bg-black px-4 py-16 text-white sm:px-6 sm:py-20"
       id="horarios"
     >
+      <div className="mx-auto mb-12 flex max-w-7xl flex-col gap-5 border-b border-white/10 pb-10 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="text-xs font-black uppercase tracking-[0.2em] text-gray-500">Estás viendo la sede</p>
+          <p className="font-sport text-3xl font-black text-white">XTREME {location.city.toUpperCase()}</p>
+        </div>
+        <LocationSwitcher />
+      </div>
       <div className="mx-auto grid max-w-7xl gap-12 md:grid-cols-4">
         <div className="md:col-span-2">
           <div className="mb-6">
             <Logo size="small" />
           </div>
           <p className="mb-8 max-w-sm text-gray-400">
-            La mejor experiencia de entrenamiento de alta intensidad en
-            Tarapoto. Rompe tus límites con nosotros.
+            Fuerza, disciplina y entrenamiento semipersonalizado desde la Amazonía. Ya estamos en Tarapoto y Pucallpa.
           </p>
           <div className="flex gap-4">
             {socialLinks.map((link) => (
@@ -85,11 +99,11 @@ export function Footer() {
             UBICACION
           </h5>
           <p className="leading-relaxed text-gray-400">
-            {contactInfo.address}
+            {location.address}
             <br />
-            {contactInfo.city}
+            {location.cityLine}
             <br />
-            {contactInfo.region}
+            {location.region}, Perú
           </p>
         </div>
 
@@ -100,31 +114,25 @@ export function Footer() {
           <div className="space-y-3 text-gray-400">
             <a
               className="flex items-center gap-3 transition hover:text-x-neon"
-              href={`tel:+51${contactInfo.phone.replaceAll(" ", "")}`}
+              href={`tel:+51${location.phone.replaceAll(" ", "")}`}
             >
               <ContactIcon type="phone" />
-              {contactInfo.phone}
+              {location.phone}
             </a>
             <a
               className="flex items-center gap-3 break-all transition hover:text-x-neon"
-              href={`mailto:${contactInfo.email}`}
+              href={`mailto:${location.email}`}
             >
               <ContactIcon type="email" />
-              {contactInfo.email}
+              {location.email}
             </a>
-            <p className="leading-relaxed">
-              Lun - Vie: 5:00 AM - 10:00 PM
-              <br />
-              Sábados: 6:00 AM - 2:00 PM
-              <br />
-              Domingos: Descanso Xtreme
-            </p>
+            <p className="leading-relaxed">{location.hours.map((hour) => <span className="block" key={hour}>{hour}</span>)}</p>
           </div>
         </div>
       </div>
-      <div className="mx-auto mt-20 flex max-w-7xl flex-col items-center justify-between gap-4 border-t border-white/5 pt-8 text-xs text-gray-600 md:flex-row">
-        <span>
-          © 2026 XTREME FITNESS TARAPOTO. TODOS LOS DERECHOS RESERVADOS.
+      <div className="mx-auto mt-14 flex max-w-7xl flex-col items-center justify-between gap-4 border-t border-white/5 pt-8 text-center text-xs text-gray-600 sm:mt-20 md:flex-row md:text-left">
+        <span className="leading-relaxed">
+          © 2026 XTREME FITNESS · TARAPOTO + PUCALLPA. TODOS LOS DERECHOS RESERVADOS.
         </span>
         <span className="font-playful text-x-neon/60">
           Entrena fuerte, sin excusas.

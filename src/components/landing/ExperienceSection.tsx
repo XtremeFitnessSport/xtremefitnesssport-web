@@ -1,4 +1,8 @@
+'use client';
+
 import { images } from '@/assets/images';
+import { useGymLocation } from '@/context/GymLocationContext';
+import { getLocationContent } from '@/data/locationContent';
 import Image from 'next/image';
 
 const experienceCards = [
@@ -29,6 +33,8 @@ const experienceCards = [
 ];
 
 export function ExperienceSection() {
+  const { locationId } = useGymLocation();
+  const location = getLocationContent(locationId);
   return (
     <section className="relative overflow-hidden py-20 sm:py-24">
       <div className="absolute inset-0 z-0">
@@ -43,7 +49,7 @@ export function ExperienceSection() {
 
       <div className="relative z-10 mx-auto grid max-w-7xl grid-cols-1 items-center gap-10 px-4 sm:px-6 md:grid-cols-2">
         <div className="space-y-6">
-          <span className="font-playful text-xl text-x-neon sm:text-2xl">Tarapoto Power</span>
+          <span className="font-playful text-xl text-x-neon sm:text-2xl">{location.eyebrow}</span>
           <h2 className="font-sport text-4xl font-extrabold uppercase leading-[0.85] sm:text-6xl md:text-7xl xl:text-8xl">
             ASÍ SE SIENTE
             <br />

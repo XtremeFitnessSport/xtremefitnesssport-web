@@ -1,23 +1,19 @@
 import type { Metadata } from 'next';
-import { FinalCtaSection } from '@/components/landing/FinalCtaSection';
 import { Footer } from '@/components/landing/Footer';
-import { MothersDayPromoBanner } from '@/components/landing/MothersDayPromoBanner';
-import { MothersDayPromoDialog } from '@/components/landing/MothersDayPromoDialog';
 import { Navbar } from '@/components/landing/Navbar';
-import { PlansSection } from '@/components/landing/PlansSection';
-import { ScheduleSection } from '@/components/landing/ScheduleSection';
+import { PlanesPageContent } from '@/components/landing/PlanesPageContent';
 
 export const metadata: Metadata = {
   title: 'Planes y horarios',
   description:
-    'Conoce los planes Strong y Súper Strong de Xtreme Fitness Tarapoto, precios, beneficios y horarios de entrenamiento.',
+    'Conoce los planes, beneficios y horarios de Xtreme Fitness en Tarapoto y Pucallpa.',
   alternates: {
     canonical: '/planes/',
   },
   openGraph: {
-    title: 'Planes y horarios | Xtreme Fitness Tarapoto',
+    title: 'Planes y horarios | Xtreme Fitness',
     description:
-      'Planes de entrenamiento semipersonalizado en Tarapoto con horarios puntuales y guía profesional.',
+      'Planes y agenda de entrenamiento semipersonalizado para las sedes de Tarapoto y Pucallpa.',
     url: '/planes/',
   },
 };
@@ -26,13 +22,7 @@ export default function PlanesPage() {
   return (
     <>
       <Navbar />
-      <MothersDayPromoDialog />
-      <main className="bg-x-black pt-16 min-[601px]:pt-32 xl:pt-20">
-        <MothersDayPromoBanner />
-        <PlansSection />
-        <ScheduleSection />
-        <FinalCtaSection />
-      </main>
+      <PlanesPageContent />
       <Footer />
     </>
   );

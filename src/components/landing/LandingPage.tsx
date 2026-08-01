@@ -1,6 +1,8 @@
+'use client';
+
+import { usePublicWebsiteData } from '@/hooks/usePublicWebsiteData';
 import { CoachesSection } from './CoachesSection';
 import { CoachEducationSection } from './CoachEducationSection';
-import { DigitalSoonSection } from './DigitalSoonSection';
 import { ExperienceSection } from './ExperienceSection';
 import { FaqSection } from './FaqSection';
 import { FinalCtaSection } from './FinalCtaSection';
@@ -17,6 +19,8 @@ import { TrainingSection } from './TrainingSection';
 import { TransformationsSection } from './TransformationsSection';
 
 export function LandingPage() {
+  const { data } = usePublicWebsiteData();
+
   return (
     <>
       <Navbar />
@@ -28,12 +32,11 @@ export function LandingPage() {
         <PerformanceSection />
         <CoachesSection />
         <CoachEducationSection />
-        <TransformationsSection />
+        <TransformationsSection items={data?.results} />
         <FitnessTipsSection />
-        <GallerySection />
+        <GallerySection items={data?.gallery} />
         <LocalIdentitySection />
-        <DigitalSoonSection />
-        <TestimonialsSection />
+        <TestimonialsSection items={data?.testimonials} />
         <FaqSection />
         <FinalCtaSection />
       </main>
