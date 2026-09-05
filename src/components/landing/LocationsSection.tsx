@@ -19,9 +19,9 @@ export function LocationsSection() {
         <div className="mb-14 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
             <span className="font-playful text-xl text-x-neon sm:text-2xl">Cómo llegar</span>
-            <h2 className="font-sport text-4xl font-extrabold uppercase leading-none sm:text-6xl md:text-7xl xl:text-8xl">
+            <h1 className="font-sport text-4xl font-extrabold uppercase leading-none sm:text-6xl md:text-7xl xl:text-8xl">
               NUESTRAS <span className="text-x-neon">SEDES</span>
-            </h2>
+            </h1>
           </div>
           <p className="max-w-xl border-l-2 border-x-neon pl-6 text-lg text-gray-400">
             Elige una sede para ver dirección, referencia, horarios y pasos rápidos para llegar al gimnasio.
@@ -39,7 +39,7 @@ export function LocationsSection() {
                   className={`w-full border p-5 text-left transition-all duration-500 sm:p-6 ${
                     isActive
                       ? 'relative z-20 scale-100 border-x-neon bg-white/10 opacity-100 shadow-[0_0_28px_rgba(24,240,0,0.16)] blur-0'
-                      : 'relative z-0 scale-[0.96] border-white/10 bg-white/[0.03] opacity-45 blur-[1px] hover:opacity-80 hover:blur-0'
+                      : 'relative border-white/20 bg-white/[0.03] hover:border-white/50 hover:bg-white/[0.06]'
                   }`}
                   key={location.id}
                   onClick={() => setLocationId(location.id as GymLocationId)}
@@ -61,7 +61,7 @@ export function LocationsSection() {
             <div className="relative">
               <div className="mb-8">
                 <p className="font-playful text-xl text-x-neon sm:text-2xl">{activeLocation.region}</p>
-                <h3 className="break-words font-sport text-3xl font-extrabold leading-none text-white min-[390px]:text-4xl sm:text-5xl md:text-7xl">
+                <h3 className="break-words font-sport text-3xl font-extrabold leading-none text-white sm:text-4xl md:text-5xl">
                   XTREME {activeLocation.city.toUpperCase()}
                 </h3>
                 {activeLocation.openingLabel ? <p className="mt-4 inline-block bg-x-neon px-3 py-2 font-sport text-xl font-black text-black">{activeLocation.openingLabel}</p> : null}

@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+
 import { images } from '@/assets/images';
 import { useGymLocation } from '@/context/GymLocationContext';
 import { getLocationContent } from '@/data/locationContent';
@@ -56,12 +58,17 @@ export function HeroSection() {
           ) : null}
 
           <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
-            <a className="btn-skew mx-auto w-[calc(100%-1rem)] bg-neon px-5 py-3.5 font-sport text-lg font-black text-black shadow-[0_0_30px_rgba(24,240,0,0.3)] transition hover:brightness-110 sm:mx-0 sm:w-auto sm:px-9 sm:text-xl" href="#contacto">
-              <span>{isPucallpa ? 'QUIERO ESTAR AHÍ' : 'EMPEZAR AHORA'}</span>
-            </a>
-            <a className="btn-skew mx-auto w-[calc(100%-1rem)] border-2 border-white px-5 py-3.5 font-sport text-lg font-black text-white transition hover:bg-white hover:text-black sm:mx-0 sm:w-auto sm:px-9 sm:text-xl" href={isPucallpa ? '/planes#horarios-clases' : '#programas'}>
-              <span>{isPucallpa ? 'VER AGENDA' : 'VER PROGRAMAS'}</span>
-            </a>
+            <Link className="btn-skew mx-auto w-[calc(100%-1rem)] bg-neon px-5 py-3.5 font-sport text-lg font-black text-black shadow-[0_0_30px_rgba(24,240,0,0.3)] transition hover:brightness-110 sm:mx-0 sm:w-auto sm:px-9 sm:text-xl" href="/planes">
+              <span>VER PRECIOS</span>
+            </Link>
+            <Link className="btn-skew mx-auto w-[calc(100%-1rem)] border-2 border-white px-5 py-3.5 font-sport text-lg font-black text-white transition hover:bg-white hover:text-black sm:mx-0 sm:w-auto sm:px-9 sm:text-xl" href="/planes#horarios-clases">
+              <span>VER HORARIOS</span>
+            </Link>
+          </div>
+
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-3 text-sm text-gray-300 lg:justify-start">
+            <span className="font-semibold text-white">Tu sede: {location.city}</span>
+            <Link className="inline-flex min-h-11 items-center underline decoration-white/40 underline-offset-4 transition hover:text-x-neon" href="/sedes">Cómo llegar →</Link>
           </div>
 
           <div className="mt-6 flex flex-wrap justify-center gap-x-5 gap-y-2 lg:justify-start">
@@ -95,7 +102,7 @@ export function HeroSection() {
             </div>
             {isPucallpa ? (
               <a className="absolute left-5 top-5 border border-white/20 bg-black/75 px-4 py-2 font-sport text-sm font-black text-white backdrop-blur transition hover:border-x-neon hover:text-x-neon" href={location.mapUrl} rel="noreferrer" target="_blank">
-                PIN OFICIAL ↗
+                CÓMO LLEGAR ↗
               </a>
             ) : null}
           </div>

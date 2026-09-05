@@ -3,28 +3,19 @@ import { images } from '@/assets/images';
 export const portalUrl = process.env.NEXT_PUBLIC_PORTAL_URL ?? 'https://xtremefitnesssport.web.app';
 
 export const navLinks = [
-  { label: 'INICIO', href: '/#inicio' },
-  { label: 'PROGRAMAS', href: '/#programas' },
-  { label: 'PLANES', href: '/planes', children: [{ label: 'HORARIOS', href: '/planes#horarios-clases' }] },
-  {
-    label: 'RESULTADOS',
-    href: '/#resultados',
-    children: [
-      { label: 'TRANSFORMACIONES', href: '/#resultados' },
-      { label: 'TESTIMONIOS', href: '/#testimonios' },
-    ],
-  },
-  {
-    label: 'CONSEJOS',
-    href: '/#consejos',
-    children: [
-      { label: 'TIPS FITNESS', href: '/#consejos' },
-      { label: 'EDUCACIÓN DEL COACH', href: '/#capacitaciones' },
-    ],
-  },
-  { label: 'GALERÍA', href: '/#galeria' },
-  { label: 'SEDES', href: '/sedes' },
-  { label: 'CONTACTO', href: '/#contacto' },
+  { label: 'Precios y planes', href: '/planes' },
+  { label: 'Horarios', href: '/planes#horarios-clases' },
+  { label: 'Sedes y ubicación', href: '/sedes' },
+  { label: 'Entrenamiento', href: '/#programas' },
+  { label: 'Resultados', href: '/#resultados' },
+];
+
+export const exploreLinks = [
+  { label: 'Testimonios', href: '/#testimonios' },
+  { label: 'Galería', href: '/#galeria' },
+  { label: 'Consejos fitness', href: '/#consejos' },
+  { label: 'Educación del coach', href: '/#capacitaciones' },
+  { label: 'Contacto', href: '/#contacto' },
 ];
 
 export const highlights = ['FUERZA MUSCULAR', 'SEMIPERSONALIZADO', 'PERFIL INDIVIDUAL'];

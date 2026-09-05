@@ -1,9 +1,11 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 import { useGymLocation } from '@/context/GymLocationContext';
 
 export function ScrollExperience() {
+  const pathname = usePathname();
   const progressRef = useRef<HTMLDivElement>(null);
   const { locationId } = useGymLocation();
 
@@ -39,10 +41,7 @@ export function ScrollExperience() {
       else element.classList.add('is-visible');
     });
 
-    // Safety net: visual effects must never be able to leave real content hidden.
-    const visibilityFallback = window.setTimeout(() => {
-      observedElements.forEach((element) => element.classList.add('is-visible'));
-    }, 900);
+
 
     let frame = 0;
     const updateScrollEffects = () => {
@@ -68,12 +67,21 @@ export function ScrollExperience() {
       revealObserver?.disconnect();
       window.removeEventListener('scroll', onScroll);
       if (frame) window.cancelAnimationFrame(frame);
-      window.clearTimeout(visibilityFallback);
       observedElements.forEach((element) => element.classList.remove('scroll-section', 'scroll-item', 'is-visible'));
       root.classList.remove('scroll-motion');
       root.style.removeProperty('--parallax-y');
     };
-  }, [locationId]);
+  }, [locationId, pathname]);
+
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const main = document.querySelector('main');
+    const entrance = main?.animate(
+      [{ opacity: 0.65, transform: 'translateY(14px)' }, { opacity: 1, transform: 'translateY(0)' }],
+      { duration: 380, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' },
+    );
+    return () => entrance?.cancel();
+  }, [pathname]);
 
   return <div aria-hidden="true" className="scroll-progress" ref={progressRef} />;
 }

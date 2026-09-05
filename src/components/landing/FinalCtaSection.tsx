@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+
 import { useGymLocation } from '@/context/GymLocationContext';
 import { getLocationContent } from '@/data/locationContent';
 import { LocationSwitcher } from './LocationSwitcher';
@@ -41,12 +43,12 @@ export function FinalCtaSection() {
           >
             <span>WHATSAPP DIRECTO</span>
           </a>
-          <a
+          <Link
             className="btn-skew mx-auto w-[calc(100%-1rem)] border-4 border-white px-5 py-4 font-sport text-xl font-black text-white transition hover:bg-white hover:text-black sm:mx-0 sm:w-auto sm:px-12 sm:py-6 sm:text-3xl"
             href="/planes#horarios-clases"
           >
             <span>VER HORARIOS</span>
-          </a>
+          </Link>
         </div>
       </div>
     </section>

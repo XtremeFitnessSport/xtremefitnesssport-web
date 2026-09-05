@@ -1,56 +1,30 @@
-import { navLinks, portalUrl } from '@/data/landing';
+import { exploreLinks, navLinks, portalUrl } from '@/data/landing';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
-type MobileNavMenuProps = {
-  onNavigate: () => void;
-};
+type MobileNavMenuProps = { onNavigate: () => void };
 
 export function MobileNavMenu({ onNavigate }: MobileNavMenuProps) {
+  const pathname = usePathname();
+
   return (
-    <div className="max-h-[calc(100svh-4rem)] overflow-y-auto border-t border-white/10 bg-black/95 px-4 py-4 sm:max-h-[calc(100svh-5rem)] xl:hidden">
-      <div className="grid gap-3 font-sport text-xl font-black text-white">
-        {navLinks.map((link) => (
-          <div className="border-b border-white/10 py-2" key={link.label}>
-            <a
-              className={`block transition hover:text-x-neon ${
-                link.href === '/planes' || link.href === '/sedes'
-                  ? 'border border-x-neon/50 bg-x-neon/10 px-4 py-3 text-x-neon'
-                  : ''
-              }`}
-              href={link.href}
-              onClick={onNavigate}
-            >
-              {link.label}
-            </a>
-            {'children' in link && link.children?.length ? (
-              <div className="mt-2 border-l-2 border-x-neon/60 pl-4 text-base text-gray-300">
-                {link.children.map((child) => (
-                  <a
-                    className="block py-1 transition hover:text-x-neon"
-                    href={child.href}
-                    key={child.label}
-                    onClick={onNavigate}
-                  >
-                    {child.label}
-                  </a>
-                ))}
-              </div>
-            ) : null}
-          </div>
-        ))}
-        <a
-          className="mt-2 border border-white/25 bg-white/5 px-5 py-3 text-center text-white transition hover:border-x-neon hover:bg-x-neon hover:text-black"
-          href={portalUrl}
-          onClick={onNavigate}
-          rel="noreferrer"
-          target="_blank"
-        >
-          LOGIN PORTAL
-        </a>
-        <Link className="btn-skew mt-2 bg-x-neon px-5 py-3 text-center text-black" href="/#contacto" onClick={onNavigate}>
-          <span>QUIERO ENTRENAR</span>
-        </Link>
-      </div>
+    <div id="mobile-navigation" className="max-h-[calc(100dvh-var(--header-height))] overflow-y-auto border-t border-white/10 bg-black px-4 py-4 shadow-2xl sm:px-6 xl:hidden">
+      <Link className="nav-link flex" href="/#inicio" onClick={onNavigate}>Inicio</Link>
+      {navLinks.map((link) => {
+        const isActive = !link.href.includes('#') && pathname.replace(/\/$/, '') === link.href;
+        return (
+          <Link aria-current={isActive ? 'page' : undefined} className={`nav-link flex ${isActive ? 'nav-link-active' : ''}`} href={link.href} key={link.label} onClick={onNavigate}>
+            {link.label}
+          </Link>
+        );
+      })}
+      <details className="my-2 border-y border-white/10 py-2">
+        <summary className="min-h-11 cursor-pointer px-3 py-3 text-sm font-semibold text-gray-300">Más sobre Xtreme</summary>
+        {exploreLinks.map((link) => <Link className="nav-link flex" href={link.href} key={link.label} onClick={onNavigate}>{link.label}</Link>)}
+      </details>
+      <a className="nav-link flex" href={portalUrl} onClick={onNavigate} rel="noreferrer" target="_blank">
+        Portal de socios ↗<span className="sr-only"> (abre en otra pestaña)</span>
+      </a>
     </div>
   );
 }

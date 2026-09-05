@@ -50,6 +50,20 @@ export function ScheduleSection({ classItems, student, weeklySchedules }: Schedu
           </div>
         </div>
 
+        <div className="mb-8 grid gap-4 border border-x-neon/40 bg-x-neon/5 p-5 sm:p-7 md:grid-cols-[1fr_auto] md:items-center">
+          <div>
+            <h3 className="font-sport text-2xl font-black text-x-neon">Horario de atención · {location.city}</h3>
+            {locationId === 'tarapoto' ? (
+              <ul className="mt-3 space-y-2 text-base text-white">
+                {location.hours.map((hour) => <li key={hour}>{hour}</li>)}
+              </ul>
+            ) : <p className="mt-3 text-gray-300">Los horarios regulares de Pucallpa están pendientes de confirmación. Consulta antes de tu visita.</p>}
+          </div>
+          <a className="btn-skew bg-x-neon px-5 py-3 font-sport text-lg font-black text-black" href={`https://wa.me/${location.whatsapp}?text=${encodeURIComponent(`Hola, quiero confirmar los horarios de Xtreme Fitness ${location.city}.`)}`}>
+            <span>Consultar horario ↗</span>
+          </a>
+        </div>
+
         {location.openingLabel ? (
           <div className="mb-8 overflow-hidden border border-x-neon bg-x-neon text-black">
             <div className="grid items-center gap-4 px-5 py-5 sm:grid-cols-[1fr_auto] sm:px-8">

@@ -1,8 +1,11 @@
 'use client';
 
-import { contactInfo, xtremePlans } from '@/data/landing';
+import { xtremePlans } from '@/data/landing';
 import type { MembershipOption as PublicMembershipOption, PromoCampaign, PublicPlan } from '@/services/publicWebsite';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
+import Link from 'next/link';
+import { useGymLocation } from '@/context/GymLocationContext';
+import { getLocationContent } from '@/data/locationContent';
 
 type XtremePlan = (typeof xtremePlans)[number];
 type LocalMembershipOption = {
@@ -38,7 +41,7 @@ function getMembershipOptions(plan: Plan): MembershipOption[] {
   return [{ period: '1 mes', price: `${plan.price} ${plan.priceLabel}`, isBase: true }, ...promoMemberships];
 }
 
-function buildPlanWhatsappHref(plan: Plan, membership: MembershipOption, showCampaignPrice: boolean) {
+function buildPlanWhatsappHref(plan: Plan, membership: MembershipOption, showCampaignPrice: boolean, location: ReturnType<typeof getLocationContent>) {
   const features = getPlanFeatures(plan)
     .map((feature) => `✔️ ${feature}`)
     .join('\n');
@@ -47,7 +50,7 @@ function buildPlanWhatsappHref(plan: Plan, membership: MembershipOption, showCam
     .join('\n');
   const previousPrice = showCampaignPrice && plan.previousPrice ? `\n💥 Antes: ${plan.previousPrice}` : '';
   const promotionsTitle = 'promotionsTitle' in plan ? plan.promotionsTitle : 'Opciones de membresía';
-  const message = `🔥 Hola Xtreme Fitness, quiero información del PLAN ${plan.name}.
+  const message = `🔥 Hola Xtreme Fitness ${location.city}, quiero información del PLAN ${plan.name}.
 
 📌 Plan elegido: ${plan.name}
 💰 Precio: ${plan.price} ${plan.priceLabel}${previousPrice}
@@ -64,7 +67,7 @@ ${promotions}
 ⚡ Quiero empezar con este plan.
 Mensaje enviado desde la web.`;
 
-  return `https://wa.me/${contactInfo.whatsapp}?text=${encodeURIComponent(message)}`;
+  return `https://wa.me/${location.whatsapp}?text=${encodeURIComponent(message)}`;
 }
 
 type PlansSectionProps = {
@@ -73,11 +76,12 @@ type PlansSectionProps = {
 };
 
 export function PlansSection({ plans, campaign }: PlansSectionProps) {
+  const { locationId } = useGymLocation();
+  const location = getLocationContent(locationId);
   const hasActiveCampaign = campaign?.active === true;
   const availablePlans: Plan[] = plans && plans.length > 0 ? plans : xtremePlans;
   const [selectedPlanId, setSelectedPlanId] = useState(availablePlans[0].id);
   const [selectedMemberships, setSelectedMemberships] = useState<Record<string, string>>({});
-  const detailRef = useRef<HTMLElement>(null);
   const activePlanId = availablePlans.some((plan) => plan.id === selectedPlanId) ? selectedPlanId : availablePlans[0].id;
   const activePlan = availablePlans.find((plan) => plan.id === activePlanId) ?? availablePlans[0];
   const isWhiteBar = activePlan.id === 'super-strong';
@@ -85,30 +89,24 @@ export function PlansSection({ plans, campaign }: PlansSectionProps) {
   const selectedMembershipPeriod = selectedMemberships[activePlan.id] ?? membershipOptions[0].period;
   const selectedMembership =
     membershipOptions.find((membership) => membership.period === selectedMembershipPeriod) ?? membershipOptions[0];
-  const planWhatsappHref = buildPlanWhatsappHref(activePlan, selectedMembership, hasActiveCampaign);
+  const planWhatsappHref = buildPlanWhatsappHref(activePlan, selectedMembership, hasActiveCampaign, location);
 
   function handlePlanSelect(planId: string) {
     setSelectedPlanId(planId);
-
-    if (window.matchMedia('(max-width: 1023px)').matches) {
-      window.setTimeout(() => {
-        detailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 80);
-    }
   }
 
   return (
-    <section className="relative overflow-hidden bg-x-black py-16 sm:py-24 lg:py-28 xl:py-32" id="planes">
+    <section className="relative overflow-hidden bg-x-black py-10 sm:py-16" id="planes">
       <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-20 grayscale" />
       <div className="absolute inset-0 bg-gradient-to-b from-x-black via-x-black/80 to-x-black" />
       <div className="amazon-pattern absolute inset-0 opacity-10" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6">
         <div className="mb-9 text-center sm:mb-12 lg:mb-16">
-          <p className="font-playful text-lg text-x-neon sm:text-2xl">Este mes no hay excusas</p>
-          <h2 className="font-sport text-4xl font-extrabold leading-none text-white min-[390px]:text-5xl sm:text-7xl md:text-8xl">
-            PLANES DE ENTRENAMIENTO
-          </h2>
+          <p className="font-playful text-lg text-x-neon sm:text-2xl">Tu próximo paso · {location.city}</p>
+          <h1 className="font-sport text-4xl font-extrabold leading-none text-white min-[390px]:text-5xl sm:text-7xl md:text-8xl">
+            PRECIOS Y PLANES
+          </h1>
           <div className="mx-auto mt-2 flex max-w-xl items-center justify-center gap-2 sm:gap-3">
             <div className="h-5 flex-1 skew-title bg-x-neon sm:h-8" />
             <span className="skew-title bg-x-neon px-5 py-1 font-sport text-2xl font-extrabold text-black sm:px-8 sm:text-4xl">
@@ -118,6 +116,8 @@ export function PlansSection({ plans, campaign }: PlansSectionProps) {
           </div>
         </div>
 
+        <p className="mb-6 text-center text-gray-300">Compara precios y frecuencia. Selecciona un plan para ver sus membresías y beneficios.</p>
+        {locationId === 'pucallpa' ? <p className="mb-6 border-l-2 border-x-neon bg-white/5 p-4 text-sm text-gray-300">Precios del catálogo Xtreme. Confirma la disponibilidad de tu plan en Pucallpa al consultar.</p> : null}
         <div className="grid items-start gap-8">
           <aside aria-label="Selecciona un plan" className="grid gap-3 min-[520px]:grid-cols-3 lg:gap-4">
             {availablePlans.map((plan) => {
@@ -130,7 +130,7 @@ export function PlansSection({ plans, campaign }: PlansSectionProps) {
                   className={`group relative w-full overflow-hidden border text-left transition-all duration-500 ${
                     isActive
                       ? 'relative z-20 scale-100 border-x-neon bg-white/10 opacity-100 shadow-[0_0_35px_rgba(24,240,0,0.2)]'
-                      : 'relative z-0 scale-[0.98] border-white/10 bg-white/[0.03] opacity-55 hover:border-x-neon/40 hover:opacity-90'
+                      : 'relative z-0 border-white/20 bg-white/[0.03] hover:border-x-neon/60 hover:bg-white/[0.06]'
                   }`}
                   key={plan.id}
                   onClick={() => handlePlanSelect(plan.id)}
@@ -171,21 +171,25 @@ export function PlansSection({ plans, campaign }: PlansSectionProps) {
                       </div>
                     </div>
                     <span className="mt-4 inline-flex border border-x-neon/40 px-3 py-1 font-sport text-xs font-black uppercase tracking-[0.18em] text-x-neon">
-                      Ver detalle
+                      {isActive ? 'Plan seleccionado ↓' : 'Comparar este plan →'}
                     </span>
                   </div>
                 </button>
               );
             })}
           </aside>
+          <div className="flex flex-wrap items-center justify-between gap-3 border-y border-white/10 py-3">
+            <Link className="quick-text-link" href="#detalle-plan">Ver detalle de {activePlan.name} ↓</Link>
+            <Link className="quick-text-link" href="#horarios-clases">Consultar horarios →</Link>
+          </div>
 
           <article
-            className="relative scroll-mt-24 overflow-hidden border border-x-neon/40 bg-black/80 shadow-2xl backdrop-blur-sm"
-            ref={detailRef}
+            id="detalle-plan"
+            className="relative overflow-hidden border border-x-neon/40 bg-black/80 shadow-2xl backdrop-blur-sm"
           >
             <div className="absolute -right-10 -top-10 h-56 w-56 rounded-full bg-x-neon/20 blur-3xl" />
             <div className={`h-5 ${isWhiteBar ? 'bg-white' : 'bg-x-neon'}`} />
-            <div className="relative">
+            <div className="plan-detail-enter relative" key={activePlan.id}>
               <div className="border-b border-white/10 p-5 sm:p-8 md:p-10">
                 <p className="font-playful text-lg text-x-neon sm:text-2xl">Plan de entrenamiento</p>
                 <div className="mt-4 flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
@@ -273,7 +277,7 @@ export function PlansSection({ plans, campaign }: PlansSectionProps) {
                     })}
                   </div>
 
-                  <div className="mt-6 border border-x-neon/30 bg-black/40 p-4">
+                  <div aria-live="polite" aria-atomic="true" className="mt-6 border border-x-neon/30 bg-black/40 p-4">
                     <p className="text-sm font-bold uppercase tracking-[0.18em] text-gray-500">Selección actual</p>
                     <p className="mt-1 font-sport text-xl font-extrabold text-white sm:text-2xl">
                       {selectedMembership.period} / <span className="text-x-neon">{selectedMembership.price}</span>

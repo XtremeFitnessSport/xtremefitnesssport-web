@@ -10,6 +10,7 @@ import { FitnessTipsSection } from './FitnessTipsSection';
 import { Footer } from './Footer';
 import { GallerySection } from './GallerySection';
 import { HeroSection } from './HeroSection';
+import { QuickInfoSection } from './QuickInfoSection';
 import { LocalIdentitySection } from './LocalIdentitySection';
 import { Navbar } from './Navbar';
 import { PerformanceSection } from './PerformanceSection';
@@ -26,17 +27,18 @@ export function LandingPage() {
       <Navbar />
       <main>
         <HeroSection />
+        <QuickInfoSection plans={data?.plans} />
+        <ProgramsSection />
         <TrainingSection />
         <ExperienceSection />
-        <ProgramsSection />
         <PerformanceSection />
         <CoachesSection />
         <CoachEducationSection />
         <TransformationsSection items={data?.results} />
+        <TestimonialsSection items={data?.testimonials} />
         <FitnessTipsSection />
         <GallerySection items={data?.gallery} />
         <LocalIdentitySection />
-        <TestimonialsSection items={data?.testimonials} />
         <FaqSection />
         <FinalCtaSection />
       </main>

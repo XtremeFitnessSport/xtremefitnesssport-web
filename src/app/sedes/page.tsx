@@ -23,7 +23,7 @@ export default function SedesPage() {
   return (
     <>
       <Navbar />
-      <main className="bg-black pt-16 sm:pt-20">
+      <main className="bg-black page-content">
         <LocationsSection />
         <FinalCtaSection />
       </main>

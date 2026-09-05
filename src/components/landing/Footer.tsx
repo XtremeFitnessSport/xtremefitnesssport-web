@@ -1,6 +1,8 @@
 'use client';
 
-import { socialLinks } from "@/data/landing";
+import Link from 'next/link';
+
+import { exploreLinks, navLinks, socialLinks } from "@/data/landing";
 import { useGymLocation } from '@/context/GymLocationContext';
 import { getLocationContent } from '@/data/locationContent';
 import { ContactIcon } from "./ContactIcon";
@@ -96,7 +98,7 @@ export function Footer() {
 
         <div>
           <h5 className="mb-6 font-sport text-xl font-black tracking-widest text-x-neon">
-            UBICACION
+            UBICACIÓN
           </h5>
           <p className="leading-relaxed text-gray-400">
             {location.address}
@@ -130,6 +132,14 @@ export function Footer() {
           </div>
         </div>
       </div>
+      <nav aria-label="Explorar Xtreme Fitness" className="mx-auto mt-10 max-w-7xl border-t border-white/10 pt-8">
+        <p className="mb-3 text-sm font-semibold text-white">Explora Xtreme</p>
+        <div className="flex flex-wrap gap-x-6 gap-y-1">
+          {[...navLinks, ...exploreLinks].map((link) => (
+            <Link className="inline-flex min-h-11 items-center text-sm text-gray-300 transition hover:text-x-neon" href={link.href} key={link.label}>{link.label}</Link>
+          ))}
+        </div>
+      </nav>
       <div className="mx-auto mt-14 flex max-w-7xl flex-col items-center justify-between gap-4 border-t border-white/5 pt-8 text-center text-xs text-gray-600 sm:mt-20 md:flex-row md:text-left">
         <span className="leading-relaxed">
           © 2026 XTREME FITNESS · TARAPOTO + PUCALLPA. TODOS LOS DERECHOS RESERVADOS.
