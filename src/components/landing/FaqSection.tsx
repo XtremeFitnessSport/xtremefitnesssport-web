@@ -1,24 +1,61 @@
-import { faqs } from '@/data/landing';
+﻿const questions = [
+  {
+    question: "¿Puedo entrenar si nunca he ido a un gimnasio?",
+    answer:
+      "Sí. El entrenamiento se adapta a tu punto de partida. El coach te guía con la técnica, las cargas y el ritmo de cada sesión.",
+  },
+  {
+    question: "¿Qué significa entrenamiento semipersonalizado?",
+    answer:
+      "Tienes una rutina según tu objetivo y acompañamiento del coach durante la sesión. Consulta con la sede cómo se organizan los grupos y los turnos.",
+  },
+  {
+    question: "¿Cómo me inscribo y cuánto tengo que pagar?",
+    answer:
+      "Elige un plan y abre su botón de WhatsApp. El mensaje ya incluye precio, frecuencia y beneficios. El equipo confirma el total, las condiciones, tu turno y los pasos de inscripción antes de cualquier pago.",
+  },
+  {
+    question: "¿Entrenan personas de nivel avanzado y atletas?",
+    answer:
+      "Sí. Además de principiantes e intermedios, trabajamos con personas avanzadas y atletas de alto rendimiento, incluidos peleadores y futbolistas. Los bloques y objetivos se coordinan con el equipo.",
+  },
+  {
+    question: "¿Puedo conocer el local antes de inscribirme?",
+    answer:
+      "Sí. Consulta con la sede cuándo puedes visitarla y conoce sus máquinas, espacios y forma de entrenar antes de elegir una membresía.",
+  },
+];
 
 export function FaqSection() {
   return (
-    <section className="bg-x-black px-4 py-20 sm:px-6 sm:py-28" id="faq">
-      <div className="mx-auto grid max-w-7xl gap-12 md:grid-cols-[0.8fr_1.2fr]">
-        <div>
-          <span className="font-playful text-xl text-x-neon sm:text-2xl">Resuelve rápido</span>
-          <h2 className="font-sport text-4xl font-extrabold uppercase leading-none sm:text-6xl md:text-7xl xl:text-8xl">
-            PREGUNTAS <span className="text-x-neon">FRECUENTES</span>
+    <section id="faq" className="gym-section border-t border-white/10">
+      <div className="gym-shell grid gap-10 md:grid-cols-[.8fr_1.2fr]">
+        <div data-reveal>
+          <p className="eyebrow">ANTES DE EMPEZAR</p>
+          <h2 className="gym-title">
+            DUDAS CORTAS.
+            <br />
+            <span className="text-x-neon">RESPUESTAS CLARAS.</span>
           </h2>
         </div>
-
-        <div className="space-y-4">
-          {faqs.map((faq) => (
-            <details className="group border border-white/10 bg-white/[0.03] p-5 open:border-x-neon sm:p-6" key={faq.question}>
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 font-sport text-xl font-extrabold text-white sm:text-2xl">
+        <div>
+          {questions.map((faq) => (
+            <details
+              key={faq.question}
+              className="group border-b border-white/15 py-5"
+            >
+              <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-6 text-base font-medium">
                 {faq.question}
-                <span className="text-x-neon transition group-open:rotate-45">+</span>
+                <span
+                  aria-hidden="true"
+                  className="text-x-neon transition-transform group-open:rotate-45"
+                >
+                  +
+                </span>
               </summary>
-              <p className="mt-4 leading-relaxed text-gray-400">{faq.answer}</p>
+              <p className="mt-4 max-w-xl text-sm leading-7 text-gray-400">
+                {faq.answer}
+              </p>
             </details>
           ))}
         </div>

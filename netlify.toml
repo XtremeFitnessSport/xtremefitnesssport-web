@@ -5,6 +5,11 @@
 [build.environment]
   NODE_VERSION = "22"
 
+[[headers]]
+  for = "/opengraph-image"
+  [headers.values]
+    Content-Type = "image/png"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"

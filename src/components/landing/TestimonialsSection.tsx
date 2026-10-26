@@ -89,8 +89,8 @@ export function TestimonialsSection({ items }: TestimonialsSectionProps) {
         </div> : (
           <div className="relative overflow-hidden border border-x-neon/40 bg-x-neon/[0.06] px-6 py-12 text-center sm:px-12 sm:py-16">
             <div className="absolute inset-y-0 left-0 w-1 bg-x-neon" />
-            <p className="font-sport text-3xl font-black uppercase text-white sm:text-5xl">Los primeros testimonios serán los de Pucallpa.</p>
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-gray-400">Abrimos el sábado 1 de agosto. Ven a entrenar, vive la experiencia y forma parte del inicio de esta comunidad.</p>
+            <p className="font-sport text-3xl font-black uppercase text-white sm:text-5xl">TU HISTORIA TAMBIÉN PUEDE SER XTREME.</p>
+            <p className="mx-auto mt-4 max-w-2xl text-lg text-gray-400">Conoce el ambiente, entrena con guía y encuentra tu lugar en nuestra comunidad de Pucallpa.</p>
             <a className="btn-skew mt-8 inline-flex w-[calc(100%-1rem)] justify-center bg-x-neon px-5 py-4 font-sport text-lg font-black text-black sm:w-auto sm:px-8 sm:text-xl" href={`https://wa.me/${location.whatsapp}`}><span>QUIERO SER PARTE</span></a>
           </div>
         )}

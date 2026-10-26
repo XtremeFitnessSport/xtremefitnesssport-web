@@ -22,7 +22,7 @@ export function FinalCtaSection() {
           <span className="text-neon">{locationId === 'pucallpa' ? 'TU MOMENTO' : 'MODO XTREME'}</span>
         </h2>
         <p className="mb-10 font-sport text-xl font-black tracking-widest text-gray-400 sm:mb-12 sm:text-2xl">
-          {locationId === 'pucallpa' ? 'APERTURA · SÁBADO 1 DE AGOSTO DE 2026' : 'SEMIPERSONALIZADO. INTENSO. HECHO PARA AVANZAR.'}
+          UN COACH. UN PLAN. TU SIGUIENTE NIVEL.
         </p>
 
         <div className="mx-auto mb-10 grid max-w-3xl gap-3 text-left sm:grid-cols-2">

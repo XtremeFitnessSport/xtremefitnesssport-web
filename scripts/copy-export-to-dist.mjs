@@ -20,6 +20,10 @@ try {
     `DirectoryIndex index.html
 ErrorDocument 404 /404.html
 
+<Files "opengraph-image">
+  ForceType image/png
+</Files>
+
 <IfModule mod_deflate.c>
   AddOutputFilterByType DEFLATE text/html text/plain text/css text/javascript application/javascript application/json application/xml image/svg+xml
 </IfModule>

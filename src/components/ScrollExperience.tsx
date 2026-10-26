@@ -1,87 +1,83 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
-import { usePathname } from 'next/navigation';
-import { useGymLocation } from '@/context/GymLocationContext';
+import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
+import { animate, inView, stagger } from "motion";
+import { useGymLocation } from "@/context/GymLocationContext";
 
 export function ScrollExperience() {
   const pathname = usePathname();
-  const progressRef = useRef<HTMLDivElement>(null);
   const { locationId } = useGymLocation();
-
+  const progressRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const root = document.documentElement;
-    const sections = Array.from(document.querySelectorAll<HTMLElement>('main section'));
-    const cards = Array.from(document.querySelectorAll<HTMLElement>('main section article'));
-    const observedElements = [...sections, ...cards];
-
-    sections.forEach((section) => section.classList.add('scroll-section'));
-    cards.forEach((card, index) => {
-      card.classList.add('scroll-item');
-      card.style.setProperty('--reveal-delay', `${(index % 4) * 70}ms`);
-    });
-    root.classList.add('scroll-motion');
-
-    const revealObserver = 'IntersectionObserver' in window
-      ? new IntersectionObserver(
-          (entries, observer) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting) {
-                entry.target.classList.add('is-visible');
-                observer.unobserve(entry.target);
-              }
-            });
-          },
-          { rootMargin: '80px 0px 40px 0px', threshold: 0.01 },
-        )
-      : null;
-
-    observedElements.forEach((element) => {
-      if (revealObserver) revealObserver.observe(element);
-      else element.classList.add('is-visible');
-    });
-
-
-
-    let frame = 0;
-    const updateScrollEffects = () => {
-      frame = 0;
-      const scrollTop = window.scrollY;
-      const scrollable = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
-      const progress = Math.min(scrollTop / scrollable, 1);
-
-      if (progressRef.current) {
-        progressRef.current.style.transform = `scaleX(${progress})`;
-      }
-      root.style.setProperty('--parallax-y', `${Math.min(scrollTop * 0.1, 90)}px`);
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let cleanup = () => {};
+    const setup = () => {
+      cleanup();
+      if (media.matches) return;
+      const animations: ReturnType<typeof animate>[] = [];
+      const stops: (() => void)[] = [];
+      // Content stays visible in SSR and when JavaScript or animations are unavailable.
+      document
+        .querySelectorAll<HTMLElement>("[data-reveal]")
+        .forEach((element) => {
+          stops.push(
+            inView(
+              element,
+              () => {
+                animations.push(
+                  animate(
+                    element,
+                    {
+                      opacity: [0.35, 1],
+                      transform: ["translateY(22px)", "translateY(0)"],
+                    },
+                    { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
+                  ),
+                );
+              },
+              { margin: "0px 0px -35px 0px" },
+            ),
+          );
+        });
+      const hero = document.querySelectorAll<HTMLElement>("[data-hero-line]");
+      if (hero.length)
+        animations.push(
+          animate(
+            hero,
+            {
+              opacity: [0.5, 1],
+              transform: ["translateY(28px)", "translateY(0)"],
+            },
+            { duration: 0.8, delay: stagger(0.09), ease: [0.22, 1, 0.36, 1] },
+          ),
+        );
+      cleanup = () => {
+        stops.forEach((stop) => stop());
+        animations.forEach((animation) => animation.stop());
+        document
+          .querySelectorAll<HTMLElement>("[data-reveal], [data-hero-line]")
+          .forEach((element) => {
+            element.style.removeProperty("opacity");
+            element.style.removeProperty("transform");
+          });
+      };
     };
-
-    const onScroll = () => {
-      if (!frame) frame = window.requestAnimationFrame(updateScrollEffects);
+    setup();
+    media.addEventListener("change", setup);
+    const update = () => {
+      if (progressRef.current)
+        progressRef.current.style.transform = `scaleX(${window.scrollY / Math.max(document.documentElement.scrollHeight - innerHeight, 1)})`;
     };
-
-    updateScrollEffects();
-    window.addEventListener('scroll', onScroll, { passive: true });
-
+    window.addEventListener("scroll", update, { passive: true });
+    update();
     return () => {
-      revealObserver?.disconnect();
-      window.removeEventListener('scroll', onScroll);
-      if (frame) window.cancelAnimationFrame(frame);
-      observedElements.forEach((element) => element.classList.remove('scroll-section', 'scroll-item', 'is-visible'));
-      root.classList.remove('scroll-motion');
-      root.style.removeProperty('--parallax-y');
+      cleanup();
+      media.removeEventListener("change", setup);
+      window.removeEventListener("scroll", update);
     };
-  }, [locationId, pathname]);
-
-  useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const main = document.querySelector('main');
-    const entrance = main?.animate(
-      [{ opacity: 0.65, transform: 'translateY(14px)' }, { opacity: 1, transform: 'translateY(0)' }],
-      { duration: 380, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' },
-    );
-    return () => entrance?.cancel();
-  }, [pathname]);
-
-  return <div aria-hidden="true" className="scroll-progress" ref={progressRef} />;
+  }, [pathname, locationId]);
+  return (
+    <div ref={progressRef} className="scroll-progress" aria-hidden="true" />
+  );
 }

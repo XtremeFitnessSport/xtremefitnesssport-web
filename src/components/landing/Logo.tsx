@@ -15,7 +15,7 @@ export function Logo({ size = 'default' }: LogoProps) {
       <div className={`relative shrink-0 ${imageSize}`}>
         <Image alt="Xtreme Fitness" className="object-contain object-left" fill priority src={images.logoXtreme} />
       </div>
-      <span className={`hidden font-sport ${titleSize} font-black tracking-normal text-white min-[420px]:inline`}>
+      <span className={`hidden font-sport ${titleSize} font-black tracking-normal text-white min-[640px]:inline`}>
         XTREME <span className="text-neon">FITNESS</span>
       </span>
     </Link>

@@ -1,96 +1,167 @@
-'use client';
+﻿"use client";
 
-import { getLocationContent } from '@/data/locationContent';
-import { useGymLocation } from '@/context/GymLocationContext';
-import Image, { type ImageProps } from 'next/image';
-import type { GalleryItem } from '@/services/publicWebsite';
-import { LocationSwitcher } from './LocationSwitcher';
+import { useRef, useState } from "react";
+import Image, { type ImageProps } from "next/image";
+import { images } from "@/assets/images";
+import type { GalleryItem } from "@/services/publicWebsite";
 
-type GalleryViewItem = {
-  id?: string;
-  title: string;
-  category?: string;
-  tag?: string;
-  image: ImageProps['src'];
-  featured?: boolean;
-};
+const facilities = [
+  { title: "MÁQUINAS Y FUERZA", image: images.gallery.altaIntensidad[3] },
+  { title: "ENTRENAMIENTO FUNCIONAL", image: images.gallery.altaIntensidad[5] },
+  { title: "COMUNIDAD XTREME", image: images.gallery.altaIntensidad[0] },
+];
+type Picture = { title: string; image: ImageProps["src"] };
 
-type GallerySectionProps = {
-  items?: GalleryItem[];
-};
-
-export function GallerySection({ items }: GallerySectionProps) {
-  const { locationId } = useGymLocation();
-  const location = getLocationContent(locationId);
-  const availableItems: GalleryViewItem[] =
-    locationId === 'tarapoto' && items && items.length > 0
-      ? items.map((item) => ({ ...item, category: item.tag }))
-      : location.gallery;
-
+export function GallerySection({ items }: { items?: GalleryItem[] }) {
+  const pictures: Picture[] = items?.length
+    ? items
+        .slice(0, 7)
+        .map((item) => ({ title: item.title, image: item.image }))
+    : facilities;
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const [active, setActive] = useState(0);
+  const openerRef = useRef<HTMLButtonElement | null>(null);
+  const open = (index: number, button: HTMLButtonElement) => {
+    setActive(index);
+    openerRef.current = button;
+    dialogRef.current?.showModal();
+  };
+  const close = () => dialogRef.current?.close();
   return (
-    <section className="bg-black px-4 py-20 sm:px-6 sm:py-28" id="galeria">
-      <div className="mx-auto max-w-7xl">
-        <div className="mb-14 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+    <section
+      id="galeria"
+      className="gym-section facilities-section"
+      aria-labelledby="facilities-title"
+    >
+      <div className="gym-shell">
+        <div className="section-heading" data-reveal>
           <div>
-            <span className="mb-3 block font-playful text-xl text-x-neon">Dos sedes. Una misma energía.</span>
-            <h2 className="font-sport text-4xl font-extrabold uppercase leading-none sm:text-6xl md:text-7xl xl:text-8xl">
-              GALERÍA <span className="text-x-neon">{location.city}</span>
+            <p className="font-playful section-handwriting">
+              Conoce tu próximo gimnasio
+            </p>
+            <h2 id="facilities-title" className="gym-title">
+              ESTO ES <span className="text-x-neon">XTREME.</span>
             </h2>
           </div>
-          <div className="flex max-w-md flex-col items-start gap-4">
-            <p className="text-gray-400">
-              {locationId === 'pucallpa'
-                ? 'La experiencia Xtreme que inspira nuestra llegada a Pucallpa. Las fotos oficiales de la nueva sede se sumarán después de la apertura.'
-                : 'Momentos reales de entrenamiento, disciplina y comunidad en nuestra sede de Tarapoto.'}
-            </p>
-            <LocationSwitcher />
-          </div>
+          <p className="section-description">
+            Máquinas, pesas y espacio para darlo todo.
+            <br />
+            Fotos reales de nuestra sede Tarapoto.
+          </p>
         </div>
-
-        <div className="grid auto-rows-[180px] grid-cols-1 gap-4 sm:auto-rows-[220px] sm:grid-cols-2 md:grid-cols-4">
-          {availableItems.map((item) => (
-            <article
-              className={`group relative min-h-[220px] overflow-hidden border border-white/10 ${
-                item.featured ? 'min-h-[300px] sm:col-span-2 sm:row-span-2 sm:min-h-[360px] md:min-h-0' : ''
-              }`}
-              key={item.id ?? item.title}
+        <div className="facilities-grid">
+          {pictures.slice(0, 3).map((item, index) => (
+            <button
+              type="button"
+              className="facility-photo"
+              key={item.title}
+              aria-label={"Ampliar foto: " + item.title}
+              onClick={(event) => open(index, event.currentTarget)}
+              data-reveal
             >
-              {typeof item.image === 'string' ? (
-                // API images can come from any public CDN, outside next.config remotePatterns.
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  alt={item.title}
-                  className="absolute inset-0 h-full w-full object-cover grayscale transition duration-700 group-hover:scale-105 group-hover:grayscale-0"
-                  src={item.image}
-                />
-              ) : (
-                <Image
-                  alt={item.title}
-                  className="object-cover grayscale transition duration-700 group-hover:scale-105 group-hover:grayscale-0"
-                  fill
-                  sizes="(min-width: 768px) 25vw, 100vw"
-                  src={item.image}
-                />
-              )}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-80" />
-              {item.category ? (
-                <div className="absolute left-4 top-4 skew-title bg-x-neon px-3 py-1 font-sport text-xs font-black uppercase tracking-[0.18em] text-black">
-                  {item.category}
-                </div>
-              ) : null}
-              <div className="absolute bottom-0 p-5">
-                <h3
-                  className={`font-sport font-extrabold text-white ${
-                    item.featured ? 'text-4xl sm:text-5xl' : 'text-2xl'
-                  }`}
-                >
-                  {item.title}
-                </h3>
-              </div>
-            </article>
+              <Image
+                src={item.image}
+                alt={item.title + ". Xtreme Fitness Tarapoto"}
+                fill
+                sizes="(min-width: 768px) 50vw, 100vw"
+                className="object-cover"
+              />
+              <span className="facility-caption">
+                <span className="font-sport">{item.title}</span>
+                <span className="photo-expand" aria-hidden="true">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.7"
+                  >
+                    <path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5" />
+                  </svg>
+                </span>
+              </span>
+            </button>
           ))}
         </div>
+        <p className="section-note mt-4">
+          Fotos de Tarapoto · Toca una imagen para ampliarla.
+        </p>
       </div>
+      <dialog
+        ref={dialogRef}
+        className="photo-dialog"
+        aria-label="Fotos de Xtreme Fitness Tarapoto"
+        onClose={() => openerRef.current?.focus()}
+        onClick={(event) => {
+          if (event.target === event.currentTarget) close();
+        }}
+        onKeyDown={(event) => {
+          if (event.key === "ArrowRight") {
+            event.preventDefault();
+            setActive((value) => (value + 1) % pictures.length);
+          }
+          if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            setActive(
+              (value) => (value + pictures.length - 1) % pictures.length,
+            );
+          }
+        }}
+      >
+        <div className="photo-dialog-inner">
+          <div className="photo-dialog-toolbar">
+            <span>
+              {active + 1} / {pictures.length} · Tarapoto
+            </span>
+            <button
+              type="button"
+              autoFocus
+              onClick={close}
+              aria-label="Cerrar fotos"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+              >
+                <path d="m6 6 12 12M6 18 18 6" />
+              </svg>
+            </button>
+          </div>
+          <div className="photo-dialog-image" key={active}>
+            <Image
+              src={pictures[active].image}
+              alt={pictures[active].title}
+              fill
+              sizes="90vw"
+              className="object-contain"
+            />
+          </div>
+          <div className="photo-dialog-toolbar">
+            <button
+              type="button"
+              onClick={() =>
+                setActive(
+                  (value) => (value + pictures.length - 1) % pictures.length,
+                )
+              }
+              aria-label="Foto anterior"
+            >
+              ←
+            </button>
+            <span className="font-sport">{pictures[active].title}</span>
+            <button
+              type="button"
+              onClick={() =>
+                setActive((value) => (value + 1) % pictures.length)
+              }
+              aria-label="Foto siguiente"
+            >
+              →
+            </button>
+          </div>
+        </div>
+      </dialog>
     </section>
   );
 }

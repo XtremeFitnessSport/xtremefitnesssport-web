@@ -1,39 +1,59 @@
-import { trainingFeatures } from '@/data/landing';
+import Image from "next/image";
+import { images } from "@/assets/images";
 
 export function TrainingSection() {
   return (
-    <section className="relative px-4 py-20 sm:px-6 sm:py-24" id="entrenamiento">
-      <div className="mx-auto max-w-7xl">
-        <div className="mb-16">
-          <h3 className="mb-2 font-playful text-xl text-neon sm:text-2xl">No es solo un gym</h3>
-          <h2 className="font-sport text-4xl font-black leading-none sm:text-6xl md:text-7xl xl:text-8xl">
-            NO VIENES SOLO A ENTRENAR.
-            <br />
-            <span className="text-neon/50">VIENES A SUPERARTE.</span>
-          </h2>
+    <section
+      className="gym-section coaching-section"
+      id="entrenamiento"
+      aria-labelledby="coaching-title"
+    >
+      <div className="gym-shell coaching-layout">
+        <div className="coaching-photo" data-reveal>
+          <Image
+            src={images.heroLocal}
+            alt="Acompañamiento del coach para corregir la técnica durante un ejercicio de fuerza"
+            fill
+            sizes="(min-width: 768px) 45vw, 100vw"
+            className="object-cover"
+          />
         </div>
-
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-          {trainingFeatures.map((feature, index) => (
-            <article
-              className={`neon-border-glow group relative overflow-hidden border-l-2 bg-white/5 p-6 transition-all sm:p-10 ${
-                index === 1 ? 'border-x-neon' : 'border-x-neon/30'
-              }`}
-              key={feature.title}
-            >
-              <div className="absolute -right-4 -top-4 font-sport text-9xl italic text-white/5 transition-colors group-hover:text-x-neon/10">
-                {String(index + 1).padStart(2, '0')}
+        <div className="coaching-copy" data-reveal>
+          <p className="eyebrow">EL DIFERENCIAL XTREME</p>
+          <h2 className="gym-title" id="coaching-title">
+            TU ESFUERZO.
+            <br />
+            <span className="text-x-neon">NUESTRA GUÍA.</span>
+          </h2>
+          <p className="section-description mt-6">
+            Entrenamiento semipersonalizado: una rutina para tu objetivo y un
+            coach que acompaña tu técnica durante la sesión.
+          </p>
+          <ol className="coaching-steps">
+            <li>
+              <span>01</span>
+              <div>
+                <h3>Conocemos tu punto de partida.</h3>
+                <p>
+                  Tu experiencia, tu disponibilidad y lo que quieres lograr.
+                </p>
               </div>
-              <h3
-                className={`mb-4 font-sport text-2xl font-extrabold uppercase sm:text-3xl ${
-                  index === 1 ? 'text-x-neon' : ''
-                }`}
-              >
-                {feature.title}
-              </h3>
-              <p className="leading-relaxed text-x-gray">{feature.description}</p>
-            </article>
-          ))}
+            </li>
+            <li>
+              <span>02</span>
+              <div>
+                <h3>Entrenas con dirección.</h3>
+                <p>Ejercicios, cargas y correcciones según tu nivel.</p>
+              </div>
+            </li>
+            <li>
+              <span>03</span>
+              <div>
+                <h3>Construyes constancia.</h3>
+                <p>Un horario y una comunidad que acompañan tu proceso.</p>
+              </div>
+            </li>
+          </ol>
         </div>
       </div>
     </section>

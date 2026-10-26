@@ -3,18 +3,15 @@ import { images } from '@/assets/images';
 export const portalUrl = process.env.NEXT_PUBLIC_PORTAL_URL ?? 'https://xtremefitnesssport.web.app';
 
 export const navLinks = [
-  { label: 'Precios y planes', href: '/planes' },
-  { label: 'Horarios', href: '/planes#horarios-clases' },
-  { label: 'Sedes y ubicación', href: '/sedes' },
-  { label: 'Entrenamiento', href: '/#programas' },
-  { label: 'Resultados', href: '/#resultados' },
+  { label: 'El gimnasio', href: '/#galeria' },
+  { label: 'Planes', href: '/#planes' },
+  { label: 'Horarios', href: '/#horarios-clases' },
+  { label: 'Sedes', href: '/sedes' },
 ];
 
 export const exploreLinks = [
-  { label: 'Testimonios', href: '/#testimonios' },
-  { label: 'Galería', href: '/#galeria' },
-  { label: 'Consejos fitness', href: '/#consejos' },
-  { label: 'Educación del coach', href: '/#capacitaciones' },
+  { label: 'Niveles de entrenamiento', href: '/#rendimientos' },
+  { label: 'Nuestra forma de entrenar', href: '/#entrenamiento' },
   { label: 'Contacto', href: '/#contacto' },
 ];
 
@@ -393,7 +390,7 @@ export const contactInfo = {
 export const hashtags = ['#TarapotoPower', '#FuerzaAmazonica'];
 
 export const socialLinks = [
-  { label: 'FB', href: '#' },
-  { label: 'IG', href: '#' },
-  { label: 'TK', href: '#' },
+  { label: 'FB', name: 'Facebook', href: 'https://www.facebook.com/funtionaltrainner/' },
+  { label: 'IG', name: 'Instagram', href: 'https://www.instagram.com/xtreme_fitness_sport/' },
+  { label: 'TK', name: 'TikTok', href: 'https://www.tiktok.com/@fernandoledesma543' },
 ];

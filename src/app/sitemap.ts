@@ -5,6 +5,7 @@ export const dynamic = 'force-static';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
+    ...['tarapoto', 'pucallpa'].map(city => ({ url: `${siteUrl}/sedes/${city}/`, lastModified: new Date(), changeFrequency: 'monthly' as const, priority: 0.9 })),
     {
       url: `${siteUrl}/`,
       lastModified: new Date(),
