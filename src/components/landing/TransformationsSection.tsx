@@ -22,8 +22,8 @@ export function TransformationsSection({ items }: TransformationsSectionProps) {
     <section className="bg-black px-4 py-20 sm:px-6 sm:py-28" id="resultados">
       <div className="mx-auto max-w-7xl">
         <div className="mb-14 text-center">
-          <span className="font-playful text-xl text-x-neon sm:text-2xl">Antes y después</span>
-          <h2 className="font-sport text-4xl font-extrabold uppercase leading-none sm:text-6xl md:text-7xl xl:text-8xl">
+          <span className="font-playful text-x-neon">Antes y después</span>
+          <h2 className="font-sport font-extrabold uppercase gym-title">
             CAMBIOS <span className="text-x-neon">REALES</span>
           </h2>
         </div>
@@ -59,15 +59,15 @@ export function TransformationsSection({ items }: TransformationsSectionProps) {
               <div className="grid grid-cols-1 border-b border-white/10 min-[390px]:grid-cols-2">
                 <div className="border-b border-white/10 bg-white/[0.04] p-4 min-[390px]:border-b-0 sm:p-5">
                   <p className="mb-3 font-sport text-xl font-extrabold uppercase text-white">Antes</p>
-                  <p className="text-sm leading-relaxed text-gray-400">{item.before}</p>
+                  <p className="text-copy text-body">{item.before}</p>
                 </div>
                 <div className="bg-x-neon p-4 text-black sm:p-5">
                   <p className="mb-3 font-sport text-xl font-extrabold uppercase">Después</p>
-                  <p className="text-sm leading-relaxed font-semibold">{item.after}</p>
+                  <p className="font-semibold text-small">{item.after}</p>
                 </div>
               </div>
               <div className="p-6">
-                <h3 className="font-sport text-2xl font-extrabold uppercase text-white sm:text-3xl">{item.title}</h3>
+                <h3 className="font-sport font-extrabold uppercase text-white text-card-title">{item.title}</h3>
               </div>
             </article>
           ))}

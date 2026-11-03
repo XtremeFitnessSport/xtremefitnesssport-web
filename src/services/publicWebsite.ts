@@ -112,7 +112,7 @@ export type PublicWebsiteData = {
   results: ResultStory[];
   testimonials: Testimonial[];
   classSchedule: ClassScheduleItem[];
-  studentSchedule: StudentSchedule;
+  studentSchedule: StudentSchedule | null;
   weeklySchedules: WeeklyPlanSchedule[];
 };
 
@@ -125,6 +125,7 @@ async function apiGet<T>(path: string): Promise<T> {
   const normalizedPath = baseUrl.endsWith('/api') && path.startsWith('/api/') ? path.replace('/api', '') : path;
   const res = await fetch(`${baseUrl}${normalizedPath}`, {
     method: 'GET',
+    credentials: 'omit',
     cache: 'no-store',
   });
 
@@ -141,43 +142,43 @@ function bySortOrder<T extends { sortOrder?: number }>(a: T, b: T) {
 
 export const publicWebsiteService = {
   getPlans() {
-    return apiGet<TrainingPlan[]>('/api/training-plans');
+    return apiGet<TrainingPlan[]>('/api/public/training-plans');
   },
 
   getMembershipOptions() {
-    return apiGet<MembershipOption[]>('/api/membership-options');
+    return apiGet<MembershipOption[]>('/api/public/membership-options');
   },
 
   getPromoCampaigns() {
-    return apiGet<PromoCampaign[]>('/api/promo-campaigns');
+    return apiGet<PromoCampaign[]>('/api/public/promo-campaigns');
   },
 
   getPromoPacks() {
-    return apiGet<PromoPack[]>('/api/promo-packs');
+    return apiGet<PromoPack[]>('/api/public/promo-packs');
   },
 
   getGallery() {
-    return apiGet<GalleryItem[]>('/api/content/gallery');
+    return apiGet<GalleryItem[]>('/api/public/content/gallery');
   },
 
   getResults() {
-    return apiGet<ResultStory[]>('/api/content/results');
+    return apiGet<ResultStory[]>('/api/public/content/results');
   },
 
   getTestimonials() {
-    return apiGet<Testimonial[]>('/api/content/testimonials');
+    return apiGet<Testimonial[]>('/api/public/content/testimonials');
   },
 
   getClassSchedule() {
-    return apiGet<ClassScheduleItem[]>('/api/schedules/classes');
+    return apiGet<ClassScheduleItem[]>('/api/public/schedules/classes');
   },
 
   getStudentSchedule() {
-    return apiGet<StudentSchedule>('/api/schedules/student');
+    return apiGet<StudentSchedule | null>('/api/public/schedules/student');
   },
 
   getWeeklyPlanSchedules() {
-    return apiGet<WeeklyPlanSchedule[]>('/api/schedules/weekly-plans');
+    return apiGet<WeeklyPlanSchedule[]>('/api/public/schedules/weekly-plans');
   },
 };
 

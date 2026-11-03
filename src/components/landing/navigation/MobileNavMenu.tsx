@@ -19,7 +19,7 @@ export function MobileNavMenu({ onNavigate }: MobileNavMenuProps) {
         );
       })}
       <details className="my-2 border-y border-white/10 py-2">
-        <summary className="min-h-11 cursor-pointer px-3 py-3 text-sm font-semibold text-gray-300">Más sobre Xtreme</summary>
+        <summary className="min-h-11 cursor-pointer px-3 py-3 text-small font-semibold text-copy">Más sobre Xtreme</summary>
         {exploreLinks.map((link) => <Link className="nav-link flex" href={link.href} key={link.label} onClick={onNavigate}>{link.label}</Link>)}
       </details>
       <a className="nav-link flex" href={portalUrl} onClick={onNavigate} rel="noreferrer" target="_blank">

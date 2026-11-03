@@ -1,4 +1,4 @@
-﻿const questions = [
+const questions = [
   {
     question: "¿Puedo entrenar si nunca he ido a un gimnasio?",
     answer:
@@ -53,7 +53,7 @@ export function FaqSection() {
                   +
                 </span>
               </summary>
-              <p className="mt-4 max-w-xl text-sm leading-7 text-gray-400">
+              <p className="mt-4 max-w-xl text-copy text-body">
                 {faq.answer}
               </p>
             </details>

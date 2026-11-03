@@ -6,7 +6,7 @@ export function ProgramsSection() {
     <section className="bg-x-black py-20 sm:py-28 lg:py-32" id="programas">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="mb-12 text-center sm:mb-20">
-          <h2 className="font-sport text-4xl font-extrabold uppercase sm:text-5xl md:text-7xl">
+          <h2 className="font-sport font-extrabold uppercase gym-title">
             ELIGE TU FORMA DE <span className="text-x-neon">BATALLAR</span>
           </h2>
         </div>
@@ -27,8 +27,8 @@ export function ProgramsSection() {
                 }`}
               />
               <div className="absolute bottom-0 p-6 sm:p-8">
-                <h4 className="mb-2 font-sport text-2xl font-extrabold sm:text-3xl">{program.title}</h4>
-                <p className="mb-4 text-sm text-x-gray">{program.description}</p>
+                <h4 className="mb-2 font-sport font-extrabold text-card-title">{program.title}</h4>
+                <p className="mb-4 text-x-gray text-body">{program.description}</p>
                 <a
                   className="border-b border-x-neon font-sport text-lg uppercase tracking-widest text-x-neon transition hover:text-white"
                   href="#contacto"

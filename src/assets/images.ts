@@ -12,11 +12,24 @@ import logoXtreme from './logo_xtreme.png';
 import masDisciplina from './mas_disciplina.jpg';
 import realProcess from './real_process.png';
 import sinExcusas from './sin_excusas.jpg';
+import pucallpaFacade from './sedes/tarapoto/fachada_1.jpeg';
+import pucallpaFacadeDay from './sedes/tarapoto/fachada_2.jpeg';
+import pucallpaMachines from './sedes/tarapoto/maquinas.jpeg';
+import pucallpaReception from './sedes/tarapoto/comedor.jpeg';
+import pucallpaDining from './sedes/tarapoto/cocina.jpeg';
+import trainingMotivation from './redes/motivacion_entreno.jpg';
+import goodBeautifulAffordable from './redes/bueno_bonito_barato.jpeg';
+import pucallpaOpening from './redes/apertura_pucallpa.jpg';
 
 export const images = {
   heroLocal: fotoHero,
   identitySection,
   logoXtreme,
+  // The uploaded folder is named tarapoto; these photos belong to Pucallpa.
+  locations: {
+    pucallpa: { facade: pucallpaFacade, facadeDay: pucallpaFacadeDay, machines: pucallpaMachines, reception: pucallpaReception, dining: pucallpaDining },
+  },
+  social: { trainingMotivation, goodBeautifulAffordable, pucallpaOpening },
   experienceCards: {
     enfoque,
     masDisciplina,

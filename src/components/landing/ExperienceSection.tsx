@@ -1,7 +1,7 @@
 'use client';
 
 import { images } from '@/assets/images';
-import { useGymLocation } from '@/context/GymLocationContext';
+import { useGymLocation, type GymLocationId } from '@/context/GymLocationContext';
 import { getLocationContent } from '@/data/locationContent';
 import Image from 'next/image';
 
@@ -10,33 +10,33 @@ const experienceCards = [
     title: 'SIN EXCUSAS',
     image: images.experienceCards.sinExcusas,
     className: 'h-64',
-    titleClassName: 'text-4xl text-white',
+    titleClassName: 'text-image-title text-white',
   },
   {
     title: 'MÁS DISCIPLINA',
     image: images.experienceCards.masDisciplina,
     className: 'h-48',
-    titleClassName: 'text-2xl text-white',
+    titleClassName: 'text-image-title text-white',
   },
   {
     title: 'REAL PROCESS',
     image: images.experienceCards.realProcess,
     className: 'h-48',
-    titleClassName: 'text-2xl text-x-neon',
+    titleClassName: 'text-image-title text-white',
   },
   {
     title: 'ENFOQUE',
     image: images.experienceCards.enfoque,
     className: 'h-64',
-    titleClassName: 'text-4xl text-white',
+    titleClassName: 'text-image-title text-white',
   },
 ];
 
-export function ExperienceSection() {
+export function ExperienceSection({ locationId: featuredLocationId }: { locationId?: GymLocationId }) {
   const { locationId } = useGymLocation();
-  const location = getLocationContent(locationId);
+  const location = getLocationContent(featuredLocationId ?? locationId);
   return (
-    <section className="relative overflow-hidden py-20 sm:py-24">
+    <section id="experiencia" aria-labelledby="experience-title" className="experience-section relative overflow-hidden py-20 sm:py-24">
       <div className="absolute inset-0 z-0">
         <Image
           alt="Atleta entrenando en Xtreme Fitness"
@@ -49,13 +49,13 @@ export function ExperienceSection() {
 
       <div className="relative z-10 mx-auto grid max-w-7xl grid-cols-1 items-center gap-10 px-4 sm:px-6 md:grid-cols-2">
         <div className="space-y-6">
-          <span className="font-playful text-xl text-x-neon sm:text-2xl">{location.eyebrow}</span>
-          <h2 className="font-sport text-4xl font-extrabold uppercase leading-[0.85] sm:text-6xl md:text-7xl xl:text-8xl">
-            ASÍ SE SIENTE
+          <span className="experience-label font-playful">{location.eyebrow}</span>
+          <h2 id="experience-title" className="experience-title font-sport font-extrabold uppercase gym-title">
+            <span>ASÍ SE SIENTE</span>
             <br />
-            <span className="text-white">ENTRENAR</span>
+            <span>ENTRENAR</span>
             <br />
-            <span className="text-x-neon">AQUÍ</span>
+            <span>AQUÍ</span>
           </h2>
         </div>
 

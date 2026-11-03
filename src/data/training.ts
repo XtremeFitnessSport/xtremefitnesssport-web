@@ -1,3 +1,5 @@
+export type PlanSelection = { planId: string; membershipPeriod?: string };
+
 export const trainingLevels = [
   {
     name: "PRINCIPIANTE",

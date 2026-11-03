@@ -1,114 +1,69 @@
 "use client";
 
-import {
-  studentSchedule,
-  weeklyPlanSchedules,
-  classSchedule,
-} from "@/data/landing";
+import Link from "next/link";
+import { studentSchedule, weeklyPlanSchedules, classSchedule, xtremePlans } from "@/data/landing";
+import type { PlanSelection } from "@/data/training";
 import { useGymLocation } from "@/context/GymLocationContext";
-import { getLocationContent } from "@/data/locationContent";
 import { whatsappHref } from "@/lib/whatsapp";
-import type {
-  ClassScheduleItem,
-  StudentSchedule,
-  WeeklyPlanSchedule,
-} from "@/services/publicWebsite";
+import type { ClassScheduleItem, StudentSchedule, WeeklyPlanSchedule, PublicPlan } from "@/services/publicWebsite";
 import { WhatsappIcon } from "./ContactActions";
+import { WeeklySchedule } from "./WeeklySchedule";
 
 type Props = {
   classItems?: ClassScheduleItem[];
-  student?: StudentSchedule;
+  student?: StudentSchedule | null;
   weeklySchedules?: WeeklyPlanSchedule[];
+  overview?: boolean;
+  plans?: PublicPlan[];
+  selection?: PlanSelection;
+  onSelectionChange?: (selection: PlanSelection) => void;
 };
 
-export function ScheduleSection({
-  classItems,
-  student,
-  weeklySchedules,
-}: Props) {
+export function ScheduleSection({ classItems, student, weeklySchedules, overview = false, plans, selection, onSelectionChange }: Props) {
   const { locationId } = useGymLocation();
-  const location = getLocationContent(locationId);
   const students = student ?? studentSchedule;
-  const weekly = weeklySchedules?.length
-    ? weeklySchedules
-    : weeklyPlanSchedules;
+  const weekly = weeklySchedules?.length ? weeklySchedules : weeklyPlanSchedules;
   const schedule = classItems?.length ? classItems : classSchedule;
   const message = whatsappHref(locationId, [
     "Quiero confirmar un horario para entrenar.",
     "Mi nivel y objetivo: por definir con el coach.",
     "¿Qué turnos tienen disponibles y cómo se organiza la asistencia según el plan?",
   ]);
+
   return (
-    <section
-      id="horarios-clases"
-      className="gym-section schedule-section"
-      aria-labelledby="schedule-title"
-    >
-      <div className="gym-shell schedule-layout">
-        <div data-reveal>
-          <p className="font-playful section-handwriting">
-            Entrena cuando va contigo
-          </p>
-          <h2 id="schedule-title" className="gym-title">
-            TU HORA DE <span className="text-x-neon">ENTRENAR.</span>
-          </h2>
-          <p className="section-description mt-5">
-            Horarios de {location.city}. Confirma tu turno con el equipo.
-          </p>
-        </div>
-        <div className="schedule-board" data-reveal>
-          <div className="schedule-board-header">
-            <h3 className="font-sport">HORARIOS / {location.city}</h3>
-            <span className="status-dot" aria-hidden="true" />
+    <section id="horarios-clases" className="gym-section schedule-section" aria-labelledby="schedule-title">
+      <div className="gym-shell">
+        <div className="section-heading" data-reveal>
+          <div>
+            <p className="font-playful section-handwriting">Entrena cuando va contigo</p>
+            <h2 id="schedule-title" className="gym-title">TU HORA DE <span className="text-x-neon">ENTRENAR.</span></h2>
           </div>
-          {locationId === "tarapoto" ? (
-            <dl className="hours-list">
-              {schedule.map((item) => (
-                <div key={item.day}>
-                  <dt>{item.day}</dt>
-                  <dd>{item.time}</dd>
+          <p className="section-description">Tu plan, tu día y tu entrenamiento. Ubica tu bloque y conoce el enfoque de cada sesión.</p>
+        </div>
+        {overview ? (
+          <div className="border border-white/10 bg-white/[0.03] p-5 sm:p-7">
+            <p className="mb-4 text-copy text-body">Horario de atención de referencia · Tarapoto</p>
+            <dl className="grid gap-4 sm:grid-cols-2">
+              {schedule.slice(0, 2).map((item) => (
+                <div key={item.day} className="border-l-2 border-x-neon pl-4">
+                  <dt className="text-small text-copy">{item.day}</dt>
+                  <dd className="mt-1 font-sport text-xl text-white sm:text-2xl">{item.time}</dd>
                 </div>
               ))}
             </dl>
-          ) : (
-            <div className="hours-pending">
-              <p className="font-sport">ENCUENTRA TU TURNO.</p>
-              <p>
-                Consulta los horarios disponibles de Pucallpa con nuestro
-                equipo.
-              </p>
+            <div className="schedule-overview-bottom">
+              <p className="section-note">Descubre la distribución semanal y los bloques para estudiantes.</p>
+              <Link href="/planes/#horarios-clases" className="gym-button schedule-cta">VER HORARIO COMPLETO <span aria-hidden="true">↗</span></Link>
             </div>
-          )}
-          <a className="gym-button schedule-cta" href={message}>
-            <WhatsappIcon /> CONSULTAR MI TURNO{" "}
-            <span aria-hidden="true">↗</span>
-          </a>
-          {locationId === "tarapoto" && (
-            <details className="schedule-details">
-              <summary>
-                Estudiantes y distribución semanal{" "}
-                <span aria-hidden="true">+</span>
-              </summary>
-              <div>
-                <h4>{students.title}</h4>
-                <p>{students.description}</p>
-                <p className="mt-2">{students.hours.join(" · ")}</p>
-                {weekly.map((item) => (
-                  <div className="weekly-row" key={item.group + item.plan}>
-                    <h4>
-                      {item.group} / {item.plan}
-                    </h4>
-                    <p>
-                      {item.days
-                        .map((day) => day.day + ": " + day.focus)
-                        .join(" · ")}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </details>
-          )}
-        </div>
+          </div>
+        ) : (
+          <>
+            <WeeklySchedule items={weekly} locationId={locationId} openingHours={schedule} studentHours={students.hours} plans={plans?.length ? plans : xtremePlans} selection={selection} onSelectionChange={onSelectionChange} />
+            <div className="schedule-full-details">
+              <a className="gym-button schedule-cta mt-5" href={message}><WhatsappIcon /> CONSULTAR MI TURNO <span aria-hidden="true">↗</span></a>
+            </div>
+          </>
+        )}
       </div>
     </section>
   );

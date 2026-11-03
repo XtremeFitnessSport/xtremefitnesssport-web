@@ -9,6 +9,8 @@ import { siteUrl } from "@/lib/site";
 import { whatsappHref } from "@/lib/whatsapp";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
+import { GallerySection } from "@/components/landing/GallerySection";
+import { LocationMap } from "@/components/landing/LocationMap";
 
 type City = keyof typeof locationContent;
 type Props = { params: Promise<{ ciudad: string }> };
@@ -88,27 +90,20 @@ export default async function CityPage({ params }: Props) {
                   : "Entrenamiento semipersonalizado en Pucallpa, Ucayali. Un plan para tu experiencia, sesiones con guía y la energía de la comunidad Xtreme en la selva peruana."}
               </p>
               <div className="local-info">
-                <h2 className="font-sport text-2xl font-bold">
+                <h2 className="font-sport font-bold text-card-title">
                   UBICACIÓN Y HORARIOS
                 </h2>
-                <p className="mt-3 text-sm leading-7 text-gray-300">
+                <p className="mt-3 text-copy text-body">
                   {location.address}
                   <br />
                   {location.cityLine}
                 </p>
-                <ul className="mt-4 space-y-2 text-sm text-gray-300">
+                <ul className="mt-4 space-y-2 text-small text-copy">
                   {location.hours.map((hour) => (
                     <li key={hour}>{hour}</li>
                   ))}
                 </ul>
-                <a
-                  className="mt-4 inline-flex min-h-11 items-center text-sm text-x-neon underline underline-offset-4"
-                  href={location.mapUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Cómo llegar a Xtreme Fitness {location.city} ↗
-                </a>
+                <LocationMap city={location.city} coordinates={location.mapCoordinates} mapUrl={location.mapUrl} />
               </div>
               <Link href="/planes/" className="gym-button gym-button-primary">
                 VER PLANES Y PRECIOS <span aria-hidden="true">↗</span>
@@ -117,8 +112,8 @@ export default async function CityPage({ params }: Props) {
             <figure className="m-0" data-reveal>
               <div className="local-photo">
                 <Image
-                  src={images.gallery.altaIntensidad[5]}
-                  alt="Equipamiento y zona funcional de Xtreme Fitness en Tarapoto"
+                  src={city === "pucallpa" ? images.locations.pucallpa.facade : images.gallery.altaIntensidad[5]}
+                  alt={city === "pucallpa" ? "Fachada de Xtreme Fitness Pucallpa" : "Equipamiento y zona funcional de Xtreme Fitness en Tarapoto"}
                   fill
                   sizes="(min-width: 768px) 50vw, 100vw"
                   className="object-cover"
@@ -126,14 +121,12 @@ export default async function CityPage({ params }: Props) {
                 />
               </div>
               <figcaption className="section-note mt-3">
-                Instalaciones de Tarapoto.
-                {city === "pucallpa"
-                  ? " Consulta las máquinas y espacios disponibles en Pucallpa con nuestro equipo."
-                  : ""}
+                {city === "pucallpa" ? "Nuestra sede Pucallpa." : "Instalaciones de Tarapoto."}
               </figcaption>
             </figure>
           </div>
         </section>
+        {city === "pucallpa" && <GallerySection initialLocationId="pucallpa" />}
         <section className="gym-section border-t border-white/10">
           <div className="gym-shell">
             <p className="eyebrow">ENTRENAMIENTO PARA TODOS LOS NIVELES</p>

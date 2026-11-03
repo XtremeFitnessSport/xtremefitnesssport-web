@@ -1,0 +1,322 @@
+'use client';
+
+import { xtremePlans } from '@/data/landing';
+import type { MembershipOption as PublicMembershipOption, PromoCampaign, PublicPlan } from '@/services/publicWebsite';
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useGymLocation } from '@/context/GymLocationContext';
+import { getLocationContent } from '@/data/locationContent';
+import type { PlanSelection } from '@/data/training';
+
+type XtremePlan = (typeof xtremePlans)[number];
+type LocalMembershipOption = {
+  period: string;
+  price: string;
+  isBase?: boolean;
+};
+type Plan = XtremePlan | PublicPlan;
+type MembershipOption = LocalMembershipOption | (PublicMembershipOption & { isBase?: boolean });
+
+function getPlanFeatures(plan: Plan) {
+  return 'benefits' in plan ? plan.benefits : plan.features;
+}
+
+function getPlanPromotions(plan: Plan): MembershipOption[] {
+  return 'membershipOptions' in plan ? plan.membershipOptions : plan.promotions;
+}
+
+function getPromotionLabel(membership: MembershipOption) {
+  return 'kind' in membership && membership.kind === 'beneficio' ? 'Beneficio' : membership.isBase ? 'Mensualidad' : 'Promoción';
+}
+
+function getMembershipOptions(plan: Plan): MembershipOption[] {
+  if ('membershipOptions' in plan && plan.membershipOptions.some((membership) => membership.kind !== 'beneficio')) {
+    return plan.membershipOptions.filter((membership) => membership.kind !== 'beneficio').map((membership) => ({
+      ...membership,
+      isBase: membership.kind === 'mensualidad',
+    }));
+  }
+
+  const promoMemberships = 'promotions' in plan ? plan.promotions.filter((promotion) => promotion.price.startsWith('S/')) : [];
+
+  return [{ period: '1 mes', price: `${plan.price} ${plan.priceLabel}`, isBase: true }, ...promoMemberships];
+}
+
+function buildPlanWhatsappHref(plan: Plan, membership: MembershipOption, showCampaignPrice: boolean, location: ReturnType<typeof getLocationContent>) {
+  const features = getPlanFeatures(plan)
+    .map((feature) => `✔️ ${feature}`)
+    .join('\n');
+  const promotions = getPlanPromotions(plan)
+    .map((promotion) => `• ${promotion.period}: ${promotion.price}`)
+    .join('\n');
+  const previousPrice = showCampaignPrice && plan.previousPrice ? `\n💥 Antes: ${plan.previousPrice}` : '';
+  const promotionsTitle = 'promotionsTitle' in plan ? plan.promotionsTitle : 'Opciones de membresía';
+  const message = `🔥 Hola Xtreme Fitness ${location.city}, quiero información del PLAN ${plan.name}.
+
+📌 Plan elegido: ${plan.name}
+💰 Precio: ${plan.price} ${plan.priceLabel}${previousPrice}
+🎟️ Membresía elegida: ${membership.period} - ${membership.price}
+🗓️ Frecuencia: ${plan.frequency}
+📍 Días: ${plan.days}
+
+Incluye:
+${features}
+
+${promotionsTitle}:
+${promotions}
+
+⚡ Quiero empezar con este plan.
+Mensaje enviado desde la web.`;
+
+  return `https://wa.me/${location.whatsapp}?text=${encodeURIComponent(message)}`;
+}
+
+type PlansSectionProps = {
+  plans?: PublicPlan[];
+  campaign?: PromoCampaign;
+  selection?: PlanSelection;
+  onSelectionChange?: (selection: PlanSelection) => void;
+};
+
+export function DetailedPlansSection({ plans, campaign, selection, onSelectionChange }: PlansSectionProps) {
+  const { locationId } = useGymLocation();
+  const location = getLocationContent(locationId);
+  const hasActiveCampaign = campaign?.active === true;
+  const availablePlans: Plan[] = plans && plans.length > 0 ? plans : xtremePlans;
+  const [selectedPlanId, setSelectedPlanId] = useState(availablePlans[0].id);
+  const [selectedMemberships, setSelectedMemberships] = useState<Record<string, string>>({});
+  const requestedPlanId = selection?.planId ?? selectedPlanId;
+  const activePlanId = availablePlans.some((plan) => plan.id === requestedPlanId) ? requestedPlanId : availablePlans[0].id;
+  const activePlan = availablePlans.find((plan) => plan.id === activePlanId) ?? availablePlans[0];
+  const isWhiteBar = activePlan.id === 'super-strong';
+  const membershipOptions = getMembershipOptions(activePlan);
+  const selectedMembershipPeriod = selection?.planId === activePlan.id
+    ? selection.membershipPeriod ?? membershipOptions[0].period
+    : selectedMemberships[activePlan.id] ?? membershipOptions[0].period;
+  const selectedMembership =
+    membershipOptions.find((membership) => membership.period === selectedMembershipPeriod) ?? membershipOptions[0];
+  const planWhatsappHref = buildPlanWhatsappHref(activePlan, selectedMembership, hasActiveCampaign, location);
+
+  useEffect(() => {
+    const syncPlanFromHash = () => {
+      const plan = availablePlans.find((item) => window.location.hash === `#plan-${item.id}`);
+      if (plan) {
+        setSelectedPlanId(plan.id);
+        onSelectionChange?.({ planId: plan.id });
+      }
+    };
+    const timer = window.setTimeout(syncPlanFromHash, 0);
+    window.addEventListener('hashchange', syncPlanFromHash);
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener('hashchange', syncPlanFromHash);
+    };
+  }, [availablePlans, onSelectionChange]);
+
+  function handlePlanSelect(planId: string) {
+    setSelectedPlanId(planId);
+    onSelectionChange?.({ planId, membershipPeriod: selectedMemberships[planId] });
+  }
+
+  return (
+    <section className="original-plans relative overflow-hidden bg-x-black py-10 sm:py-16" id="planes">
+      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-20 grayscale" />
+      <div className="absolute inset-0 bg-gradient-to-b from-x-black via-x-black/80 to-x-black" />
+      <div className="amazon-pattern absolute inset-0 opacity-10" />
+
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6">
+        <div className="mb-9 text-center sm:mb-12 lg:mb-16">
+          <p className="font-playful text-x-neon">Tu próximo paso · {location.city}</p>
+          <h1 className="font-sport font-extrabold text-white gym-title">
+            PRECIOS Y PLANES
+          </h1>
+          <div className="mx-auto mt-2 flex max-w-xl items-center justify-center gap-2 sm:gap-3">
+            <div className="h-5 flex-1 skew-title bg-x-neon sm:h-8" />
+            <span className="skew-title bg-x-neon px-5 py-1 font-sport font-extrabold text-black sm:px-8 text-control">
+              XTREME
+            </span>
+            <div className="h-5 flex-1 skew-title bg-x-neon sm:h-8" />
+          </div>
+        </div>
+
+        <p className="mb-6 text-center text-copy text-body">Compara precios y frecuencia. Selecciona un plan para ver sus membresías y beneficios.</p>
+        {locationId === 'pucallpa' ? <p className="mb-6 border-l-2 border-x-neon bg-white/5 p-4 text-copy text-body">Precios del catálogo Xtreme. Confirma la disponibilidad de tu plan en Pucallpa al consultar.</p> : null}
+        <div className="grid items-start gap-8">
+          <aside aria-label="Selecciona un plan" className="grid gap-3 min-[520px]:grid-cols-3 lg:gap-4">
+            {availablePlans.map((plan) => {
+              const isActive = plan.id === activePlanId;
+              const isPremium = plan.id === 'premium';
+
+              return (
+                <button
+                  id={`plan-${plan.id}`}
+                  aria-controls="detalle-plan"
+                  aria-pressed={isActive}
+                  className={`group relative w-full overflow-hidden border text-left transition-all duration-500 ${
+                    isActive
+                      ? 'relative z-20 scale-100 border-x-neon bg-white/10 opacity-100 shadow-[0_0_35px_rgba(24,240,0,0.2)]'
+                      : 'relative z-0 border-white/20 bg-white/[0.03] hover:border-x-neon/60 hover:bg-white/[0.06]'
+                  }`}
+                  key={plan.id}
+                  onClick={() => handlePlanSelect(plan.id)}
+                  type="button"
+                >
+                  {isPremium && hasActiveCampaign ? (
+                    <div className="absolute right-4 top-4 z-10 skew-title bg-x-neon px-3 py-1 font-sport text-caption font-black text-black">
+                      PROMO
+                    </div>
+                  ) : null}
+                  <div className={`h-2 ${isActive ? 'bg-x-neon' : 'bg-white/10'}`} />
+                  <div className="p-4 sm:p-5 lg:p-6">
+                    <div className="mb-4 lg:mb-5">
+                      <div>
+                        <span className="font-sport font-extrabold leading-none text-x-neon text-control">
+                          PLAN
+                        </span>
+                        <h3 className="font-sport font-extrabold text-white text-card-title">
+                          {plan.name}
+                        </h3>
+                      </div>
+                    </div>
+                    <div className="grid gap-3 lg:gap-4">
+                      <div className="border-l-2 border-x-neon pl-3">
+                        <p className="font-sport font-extrabold leading-tight text-white text-control">
+                          {plan.frequency}
+                        </p>
+                        <p className="text-copy text-body">{plan.days}</p>
+                      </div>
+                      <div>
+                        {hasActiveCampaign && plan.previousPrice ? (
+                          <p className="font-sport font-extrabold text-white/80 line-through text-control">
+                            Antes {plan.previousPrice}
+                          </p>
+                        ) : null}
+                        <p className="font-sport font-extrabold text-x-neon text-price">{plan.price}</p>
+                        <p className="text-small text-copy">{plan.priceLabel}</p>
+                      </div>
+                    </div>
+                    <span className="mt-4 inline-flex border border-x-neon/40 px-3 py-1 font-sport text-caption font-black uppercase tracking-[0.18em] text-x-neon">
+                      {isActive ? 'Plan seleccionado ↓' : 'Comparar este plan →'}
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
+          </aside>
+          <div className="flex flex-wrap items-center justify-between gap-3 border-y border-white/10 py-3">
+            <Link className="quick-text-link" href="#detalle-plan">Ver detalle de {activePlan.name} ↓</Link>
+            <Link className="quick-text-link" href="#horarios-clases">Consultar horarios →</Link>
+          </div>
+
+          <article
+            id="detalle-plan"
+            className="relative mx-auto w-full max-w-5xl overflow-hidden border border-x-neon/40 bg-black/80 shadow-2xl backdrop-blur-sm"
+          >
+            <div className="absolute -right-10 -top-10 h-56 w-56 rounded-full bg-x-neon/20 blur-3xl" />
+            <div className={`h-2 ${isWhiteBar ? 'bg-white' : 'bg-x-neon'}`} />
+            <div className="plan-detail-enter relative" key={activePlan.id}>
+              <div className="border-b border-white/10 p-5 sm:p-6">
+                <div className="mt-2 flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
+                  <h3 className="font-sport font-extrabold text-white text-card-title">
+                    PLAN <span className="text-x-neon">{activePlan.name}</span>
+                  </h3>
+                  <div className="skew-title inline-flex w-fit bg-x-neon px-4 py-2 text-black">
+                    <span className="font-sport font-extrabold text-control">
+                      {activePlan.price} <span className="text-xl sm:text-xl">{activePlan.priceLabel}</span>
+                    </span>
+                  </div>
+                </div>
+                {hasActiveCampaign && activePlan.previousPrice ? (
+                  <p className="mt-3 font-sport font-extrabold text-white/80 line-through text-control">
+                    Antes {activePlan.previousPrice}
+                  </p>
+                ) : null}
+              </div>
+
+              <div className="grid gap-0 xl:grid-cols-[0.95fr_1.05fr]">
+                <div className="border-b border-white/10 p-5 sm:p-6 xl:border-b-0 xl:border-r">
+                  <div className="mb-5 space-y-1">
+                    <p className="font-bold text-white text-body">{activePlan.frequency}</p>
+                    <p className="text-copy text-body">({activePlan.days})</p>
+                    <div className="pt-2 text-small text-secondary sm:text-base">
+                      <p>Política de empresa:</p>
+                      <p>{activePlan.policy}</p>
+                    </div>
+                  </div>
+
+                  <ul className="space-y-2">
+                    {getPlanFeatures(activePlan).map((feature) => (
+                      <li className="flex items-start gap-3 text-small font-semibold text-copy sm:text-base" key={feature}>
+                        <span className="mt-0.5 text-xl leading-none text-x-neon">✓</span>
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="bg-white/[0.03] p-5 sm:p-6">
+                  <h4 className="mb-4 font-sport font-extrabold uppercase text-white text-card-title">
+                    Elige tu membresía
+                  </h4>
+                  <div className="space-y-3">
+                    {membershipOptions.map((membership) => {
+                      const isSelected = membership.period === selectedMembership.period;
+
+                      return (
+                        <button
+                          aria-pressed={isSelected}
+                          className={`flex w-full items-center justify-between gap-3 border p-3 text-left transition sm:gap-4 ${
+                            isSelected
+                              ? 'border-x-neon bg-x-neon text-black shadow-[0_0_25px_rgba(24,240,0,0.25)]'
+                              : 'border-white/10 bg-black/30 text-white hover:border-x-neon/60 hover:bg-white/5'
+                          }`}
+                          key={membership.period}
+                          onClick={() => {
+                            setSelectedMemberships((current) => ({
+                              ...current,
+                              [activePlan.id]: membership.period,
+                            }));
+                            onSelectionChange?.({ planId: activePlan.id, membershipPeriod: membership.period });
+                          }}
+                          type="button"
+                        >
+                          <span>
+                            <span
+                              className={`block text-caption font-black uppercase tracking-[0.2em] ${
+                                isSelected ? 'text-black/70' : 'text-secondary'
+                              }`}
+                            >
+                              {getPromotionLabel(membership)}
+                            </span>
+                            <span className="text-base font-bold sm:text-lg">{membership.period}</span>
+                          </span>
+                          <span
+                            className={`font-sport text-xl font-extrabold sm:text-2xl ${
+                              isSelected ? 'text-black' : 'text-x-neon'
+                            }`}
+                          >
+                            {membership.price}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <a
+                    className="btn-xtreme mt-5 inline-flex w-full justify-center bg-x-neon px-7 py-3 text-center font-sport font-extrabold text-black sm:w-auto sm:px-8 sm:py-3 text-control"
+                    href={planWhatsappHref}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    QUIERO ESTA MEMBRESÍA
+                  </a>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  );
+}
+

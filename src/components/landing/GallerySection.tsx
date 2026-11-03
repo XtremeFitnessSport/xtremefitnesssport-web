@@ -2,22 +2,20 @@
 
 import { useRef, useState } from "react";
 import Image, { type ImageProps } from "next/image";
-import { images } from "@/assets/images";
+import { getLocationContent } from "@/data/locationContent";
+import type { GymLocationId } from "@/context/GymLocationContext";
 import type { GalleryItem } from "@/services/publicWebsite";
 
-const facilities = [
-  { title: "MÁQUINAS Y FUERZA", image: images.gallery.altaIntensidad[3] },
-  { title: "ENTRENAMIENTO FUNCIONAL", image: images.gallery.altaIntensidad[5] },
-  { title: "COMUNIDAD XTREME", image: images.gallery.altaIntensidad[0] },
-];
 type Picture = { title: string; image: ImageProps["src"] };
 
-export function GallerySection({ items }: { items?: GalleryItem[] }) {
-  const pictures: Picture[] = items?.length
+export function GallerySection({ items, initialLocationId = "tarapoto" }: { items?: GalleryItem[]; initialLocationId?: GymLocationId }) {
+  const [locationId, setLocationId] = useState<GymLocationId>(initialLocationId);
+  const location = getLocationContent(locationId);
+  const pictures: Picture[] = locationId === "tarapoto" && items?.length
     ? items
         .slice(0, 7)
         .map((item) => ({ title: item.title, image: item.image }))
-    : facilities;
+    : location.gallery;
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [active, setActive] = useState(0);
   const openerRef = useRef<HTMLButtonElement | null>(null);
@@ -30,27 +28,29 @@ export function GallerySection({ items }: { items?: GalleryItem[] }) {
   return (
     <section
       id="galeria"
-      className="gym-section facilities-section"
+      className="gym-section facilities-section reference-gallery"
       aria-labelledby="facilities-title"
     >
       <div className="gym-shell">
         <div className="section-heading" data-reveal>
           <div>
-            <p className="font-playful section-handwriting">
-              Conoce tu próximo gimnasio
-            </p>
             <h2 id="facilities-title" className="gym-title">
-              ESTO ES <span className="text-x-neon">XTREME.</span>
+              GALERÍA <span className="text-x-neon">{location.city.toUpperCase()}</span>
             </h2>
           </div>
-          <p className="section-description">
-            Máquinas, pesas y espacio para darlo todo.
-            <br />
-            Fotos reales de nuestra sede Tarapoto.
-          </p>
+          <div className="gallery-location-switcher" role="group" aria-label="Seleccionar sede de la galería">
+            {(["tarapoto", "pucallpa"] as const).map((id) => (
+              <button key={id} type="button" aria-pressed={locationId === id} onClick={() => {
+                setActive(0);
+                setLocationId(id);
+              }} className="font-sport">
+                {getLocationContent(id).city}
+              </button>
+            ))}
+          </div>
         </div>
         <div className="facilities-grid">
-          {pictures.slice(0, 3).map((item, index) => (
+          {pictures.map((item, index) => (
             <button
               type="button"
               className="facility-photo"
@@ -61,35 +61,26 @@ export function GallerySection({ items }: { items?: GalleryItem[] }) {
             >
               <Image
                 src={item.image}
-                alt={item.title + ". Xtreme Fitness Tarapoto"}
+                alt={item.title + ". Xtreme Fitness " + location.city}
                 fill
-                sizes="(min-width: 768px) 50vw, 100vw"
+                sizes={index === 0 ? "(min-width: 768px) 50vw, 100vw" : "(min-width: 768px) 25vw, 50vw"}
                 className="object-cover"
               />
+              <span className="gallery-location-tag font-sport">{location.city}</span>
               <span className="facility-caption">
                 <span className="font-sport">{item.title}</span>
-                <span className="photo-expand" aria-hidden="true">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.7"
-                  >
-                    <path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5" />
-                  </svg>
-                </span>
               </span>
             </button>
           ))}
         </div>
         <p className="section-note mt-4">
-          Fotos de Tarapoto · Toca una imagen para ampliarla.
+          Fotos de {location.city} · Toca una imagen para ampliarla.
         </p>
       </div>
       <dialog
         ref={dialogRef}
         className="photo-dialog"
-        aria-label="Fotos de Xtreme Fitness Tarapoto"
+        aria-label={"Fotos de Xtreme Fitness " + location.city}
         onClose={() => openerRef.current?.focus()}
         onClick={(event) => {
           if (event.target === event.currentTarget) close();
@@ -110,7 +101,7 @@ export function GallerySection({ items }: { items?: GalleryItem[] }) {
         <div className="photo-dialog-inner">
           <div className="photo-dialog-toolbar">
             <span>
-              {active + 1} / {pictures.length} · Tarapoto
+              {active + 1} / {pictures.length} · {location.city}
             </span>
             <button
               type="button"

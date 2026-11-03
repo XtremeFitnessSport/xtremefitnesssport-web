@@ -4,14 +4,19 @@ export const portalUrl = process.env.NEXT_PUBLIC_PORTAL_URL ?? 'https://xtremefi
 
 export const navLinks = [
   { label: 'El gimnasio', href: '/#galeria' },
-  { label: 'Planes', href: '/#planes' },
+  { label: 'Planes', href: '/planes' },
   { label: 'Horarios', href: '/#horarios-clases' },
+  { label: 'Coaches', href: '/#coaches' },
   { label: 'Sedes', href: '/sedes' },
 ];
 
 export const exploreLinks = [
   { label: 'Niveles de entrenamiento', href: '/#rendimientos' },
   { label: 'Nuestra forma de entrenar', href: '/#entrenamiento' },
+  { label: 'Energía de Tarapoto', href: '/#energia' },
+  { label: 'Cambios reales', href: '/#resultados' },
+  { label: 'Testimonios', href: '/#testimonios' },
+  { label: 'Formación de coaches', href: '/#capacitaciones' },
   { label: 'Contacto', href: '/#contacto' },
 ];
 

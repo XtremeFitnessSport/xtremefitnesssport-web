@@ -1,59 +1,77 @@
+"use client";
+
 import Image from "next/image";
+import Link from "next/link";
 import { images } from "@/assets/images";
+import { useGymLocation, type GymLocationId } from "@/context/GymLocationContext";
+import { getLocationContent } from "@/data/locationContent";
+
+const gymPhotos = [
+  {
+    title: "MÁQUINAS Y FUERZA",
+    image: images.locations.pucallpa.machines,
+    alt: "Máquinas y equipos de fuerza dentro de Xtreme Fitness Pucallpa",
+    className: "gym-tour-photo gym-tour-featured",
+  },
+  {
+    title: "ESPACIOS DE LA SEDE",
+    image: images.locations.pucallpa.reception,
+    alt: "Espacio interior de Xtreme Fitness Pucallpa",
+    className: "gym-tour-photo gym-tour-equipment",
+  },
+  {
+    title: "ASÍ NOS ENCUENTRAS",
+    image: images.locations.pucallpa.facade,
+    alt: "Fachada y entrada principal de Xtreme Fitness Pucallpa",
+    className: "gym-tour-photo",
+  },
+  {
+    title: "NUESTRA FACHADA",
+    image: images.locations.pucallpa.facadeDay,
+    alt: "Otra vista de la fachada de Xtreme Fitness Pucallpa",
+    className: "gym-tour-photo",
+  },
+  {
+    title: "MÁS ESPACIOS",
+    image: images.locations.pucallpa.dining,
+    alt: "Otro espacio interior de Xtreme Fitness Pucallpa",
+    className: "gym-tour-photo",
+  },
+];
+
+const photosByLocation: Partial<Record<GymLocationId, typeof gymPhotos>> = { pucallpa: gymPhotos };
 
 export function TrainingSection() {
+  const { locationId } = useGymLocation();
+  // Tarapoto uses the available Pucallpa photos until its own photos are supplied.
+  const photoLocationId = photosByLocation[locationId] ? locationId : "pucallpa";
+  const locationPhotos = photosByLocation[photoLocationId] ?? gymPhotos;
+  const photoLocation = getLocationContent(photoLocationId);
   return (
-    <section
-      className="gym-section coaching-section"
-      id="entrenamiento"
-      aria-labelledby="coaching-title"
-    >
-      <div className="gym-shell coaching-layout">
-        <div className="coaching-photo" data-reveal>
-          <Image
-            src={images.heroLocal}
-            alt="Acompañamiento del coach para corregir la técnica durante un ejercicio de fuerza"
-            fill
-            sizes="(min-width: 768px) 45vw, 100vw"
-            className="object-cover"
-          />
+    <section className="gym-section coaching-section" id="entrenamiento" aria-labelledby="coaching-title">
+      <div className="gym-shell">
+        <div className="section-heading" data-reveal>
+          <div>
+            <p className="font-playful section-handwriting">El diferencial Xtreme</p>
+            <h2 className="gym-title" id="coaching-title">
+              CONOCE TU GYM.<br /><span className="text-x-neon">CONOCE NUESTRA GUÍA.</span>
+            </h2>
+          </div>
+          <p className="section-description">Conoce los espacios y las máquinas de nuestra sede en {photoLocation.city}.</p>
         </div>
-        <div className="coaching-copy" data-reveal>
-          <p className="eyebrow">EL DIFERENCIAL XTREME</p>
-          <h2 className="gym-title" id="coaching-title">
-            TU ESFUERZO.
-            <br />
-            <span className="text-x-neon">NUESTRA GUÍA.</span>
-          </h2>
-          <p className="section-description mt-6">
-            Entrenamiento semipersonalizado: una rutina para tu objetivo y un
-            coach que acompaña tu técnica durante la sesión.
-          </p>
-          <ol className="coaching-steps">
-            <li>
-              <span>01</span>
-              <div>
-                <h3>Conocemos tu punto de partida.</h3>
-                <p>
-                  Tu experiencia, tu disponibilidad y lo que quieres lograr.
-                </p>
-              </div>
-            </li>
-            <li>
-              <span>02</span>
-              <div>
-                <h3>Entrenas con dirección.</h3>
-                <p>Ejercicios, cargas y correcciones según tu nivel.</p>
-              </div>
-            </li>
-            <li>
-              <span>03</span>
-              <div>
-                <h3>Construyes constancia.</h3>
-                <p>Un horario y una comunidad que acompañan tu proceso.</p>
-              </div>
-            </li>
-          </ol>
+        <div className="gym-tour">
+          {locationPhotos.map((photo, index) => (
+            <figure className={photo.className} key={photo.title} data-reveal>
+              <Image src={photo.image} alt={photo.alt} fill sizes={index === 0 ? "(min-width: 768px) 60vw, 100vw" : "(min-width: 768px) 40vw, 100vw"} className="object-cover" />
+              <figcaption>
+                <h3 className="font-sport">{photo.title}</h3>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+        <div className="gym-tour-bottom">
+          <p className="section-note">Sede {photoLocation.city}.</p>
+          <Link href={`/sedes/${locationId}/`} className="gym-button gym-tour-visit">QUIERO CONOCER EL LOCAL <span aria-hidden="true">↗</span></Link>
         </div>
       </div>
     </section>

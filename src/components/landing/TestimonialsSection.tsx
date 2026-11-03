@@ -2,7 +2,7 @@
 
 import Image, { type ImageProps } from 'next/image';
 import type { Testimonial } from '@/services/publicWebsite';
-import { useGymLocation } from '@/context/GymLocationContext';
+import { useGymLocation, type GymLocationId } from '@/context/GymLocationContext';
 import { getLocationContent } from '@/data/locationContent';
 import { LocationSwitcher } from './LocationSwitcher';
 
@@ -18,10 +18,12 @@ type TestimonialViewItem = {
 
 type TestimonialsSectionProps = {
   items?: Testimonial[];
+  locationId?: GymLocationId;
 };
 
-export function TestimonialsSection({ items }: TestimonialsSectionProps) {
-  const { locationId } = useGymLocation();
+export function TestimonialsSection({ items, locationId: featuredLocationId }: TestimonialsSectionProps) {
+  const { locationId: selectedLocationId } = useGymLocation();
+  const locationId = featuredLocationId ?? selectedLocationId;
   const location = getLocationContent(locationId);
   const availableItems: TestimonialViewItem[] = locationId === 'tarapoto'
     ? (items && items.length > 0 ? items : location.testimonials)
@@ -32,13 +34,13 @@ export function TestimonialsSection({ items }: TestimonialsSectionProps) {
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="mb-12 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
           <div>
-            <span className="font-playful text-xl text-x-neon">Voces de la comunidad</span>
-            <h2 className="mt-2 text-center font-sport text-4xl font-extrabold uppercase sm:text-5xl md:text-left">
+            <span className="font-playful text-x-neon">Voces de la comunidad · {location.city}</span>
+            <h2 className="mt-2 text-center font-sport font-extrabold uppercase md:text-left gym-title">
               {locationId === 'pucallpa' ? 'TU HISTORIA EMPIEZA' : 'LA GENTE SIENTE EL'}{' '}
               <span className="text-x-neon underline">{locationId === 'pucallpa' ? 'AHORA' : 'CAMBIO'}</span>
             </h2>
           </div>
-          <LocationSwitcher />
+          {!featuredLocationId && <LocationSwitcher />}
         </div>
 
         {availableItems.length > 0 ? <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
@@ -52,7 +54,7 @@ export function TestimonialsSection({ items }: TestimonialsSectionProps) {
                 key={testimonial.id ?? author}
               >
                 <div className={`mb-4 font-serif text-5xl ${isNeon ? 'text-x-neon' : 'text-white'}`}>“</div>
-                <p className="mb-6 text-base italic sm:text-lg">&quot;{testimonial.quote}&quot;</p>
+                <p className="mb-6 italic text-body">&quot;{testimonial.quote}&quot;</p>
                 <div className="flex items-center gap-4">
                   <div
                     className={`relative h-12 w-12 shrink-0 overflow-hidden rounded-full ${
@@ -89,9 +91,9 @@ export function TestimonialsSection({ items }: TestimonialsSectionProps) {
         </div> : (
           <div className="relative overflow-hidden border border-x-neon/40 bg-x-neon/[0.06] px-6 py-12 text-center sm:px-12 sm:py-16">
             <div className="absolute inset-y-0 left-0 w-1 bg-x-neon" />
-            <p className="font-sport text-3xl font-black uppercase text-white sm:text-5xl">TU HISTORIA TAMBIÉN PUEDE SER XTREME.</p>
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-gray-400">Conoce el ambiente, entrena con guía y encuentra tu lugar en nuestra comunidad de Pucallpa.</p>
-            <a className="btn-skew mt-8 inline-flex w-[calc(100%-1rem)] justify-center bg-x-neon px-5 py-4 font-sport text-lg font-black text-black sm:w-auto sm:px-8 sm:text-xl" href={`https://wa.me/${location.whatsapp}`}><span>QUIERO SER PARTE</span></a>
+            <p className="font-sport font-black uppercase text-white text-control">TU HISTORIA TAMBIÉN PUEDE SER XTREME.</p>
+            <p className="mx-auto mt-4 max-w-2xl text-copy text-body">Conoce el ambiente, entrena con guía y encuentra tu lugar en nuestra comunidad de Pucallpa.</p>
+            <a className="btn-skew mt-8 inline-flex w-[calc(100%-1rem)] justify-center bg-x-neon px-5 py-4 font-sport font-black text-black sm:w-auto sm:px-8 text-control" href={`https://wa.me/${location.whatsapp}`}><span>QUIERO SER PARTE</span></a>
           </div>
         )}
       </div>
