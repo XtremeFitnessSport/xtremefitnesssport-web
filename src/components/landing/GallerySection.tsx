@@ -3,13 +3,13 @@
 import { useRef, useState } from "react";
 import Image, { type ImageProps } from "next/image";
 import { getLocationContent } from "@/data/locationContent";
-import type { GymLocationId } from "@/context/GymLocationContext";
+import { useGymLocation } from "@/context/GymLocationContext";
 import type { GalleryItem } from "@/services/publicWebsite";
 
 type Picture = { title: string; image: ImageProps["src"] };
 
-export function GallerySection({ items, initialLocationId = "tarapoto" }: { items?: GalleryItem[]; initialLocationId?: GymLocationId }) {
-  const [locationId, setLocationId] = useState<GymLocationId>(initialLocationId);
+export function GallerySection({ items }: { items?: GalleryItem[] }) {
+  const { locationId, setLocationId } = useGymLocation();
   const location = getLocationContent(locationId);
   const pictures: Picture[] = locationId === "tarapoto" && items?.length
     ? items
@@ -18,6 +18,7 @@ export function GallerySection({ items, initialLocationId = "tarapoto" }: { item
     : location.gallery;
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [active, setActive] = useState(0);
+  const activeIndex = active % pictures.length;
   const openerRef = useRef<HTMLButtonElement | null>(null);
   const open = (index: number, button: HTMLButtonElement) => {
     setActive(index);
@@ -101,7 +102,7 @@ export function GallerySection({ items, initialLocationId = "tarapoto" }: { item
         <div className="photo-dialog-inner">
           <div className="photo-dialog-toolbar">
             <span>
-              {active + 1} / {pictures.length} · {location.city}
+              {activeIndex + 1} / {pictures.length} · {location.city}
             </span>
             <button
               type="button"
@@ -119,10 +120,10 @@ export function GallerySection({ items, initialLocationId = "tarapoto" }: { item
               </svg>
             </button>
           </div>
-          <div className="photo-dialog-image" key={active}>
+          <div className="photo-dialog-image" key={activeIndex}>
             <Image
-              src={pictures[active].image}
-              alt={pictures[active].title}
+              src={pictures[activeIndex].image}
+              alt={pictures[activeIndex].title}
               fill
               sizes="90vw"
               className="object-contain"
@@ -140,7 +141,7 @@ export function GallerySection({ items, initialLocationId = "tarapoto" }: { item
             >
               ←
             </button>
-            <span className="font-sport">{pictures[active].title}</span>
+            <span className="font-sport">{pictures[activeIndex].title}</span>
             <button
               type="button"
               onClick={() =>

@@ -120,9 +120,6 @@ export function DetailedPlansSection({ plans, campaign, selection, onSelectionCh
 
   return (
     <section className="original-plans relative overflow-hidden bg-x-black py-10 sm:py-16" id="planes">
-      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-20 grayscale" />
-      <div className="absolute inset-0 bg-gradient-to-b from-x-black via-x-black/80 to-x-black" />
-      <div className="amazon-pattern absolute inset-0 opacity-10" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6">
         <div className="mb-9 text-center sm:mb-12 lg:mb-16">

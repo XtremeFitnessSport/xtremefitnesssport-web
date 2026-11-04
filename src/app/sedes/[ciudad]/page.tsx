@@ -126,7 +126,7 @@ export default async function CityPage({ params }: Props) {
             </figure>
           </div>
         </section>
-        {city === "pucallpa" && <GallerySection initialLocationId="pucallpa" />}
+        {city === "pucallpa" && <GallerySection />}
         <section className="gym-section border-t border-white/10">
           <div className="gym-shell">
             <p className="eyebrow">ENTRENAMIENTO PARA TODOS LOS NIVELES</p>

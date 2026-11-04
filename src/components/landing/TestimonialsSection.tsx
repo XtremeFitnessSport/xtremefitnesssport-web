@@ -30,7 +30,7 @@ export function TestimonialsSection({ items, locationId: featuredLocationId }: T
     : location.testimonials;
 
   return (
-    <section className="bg-asphalt py-20 sm:py-28 lg:py-32" id="testimonios">
+    <section className="bg-black py-20 sm:py-28 lg:py-32" id="testimonios">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="mb-12 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
           <div>

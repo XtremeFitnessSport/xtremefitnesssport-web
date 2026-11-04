@@ -25,9 +25,9 @@ export function LandingPage() {
       <Navbar />
       <main id="contenido">
         <HeroSection />
-        <LocalIdentitySection locationId="tarapoto" />
+        <LocalIdentitySection />
         <PerformanceSection />
-        <ExperienceSection locationId="tarapoto" />
+        <ExperienceSection />
         <GallerySection items={data?.gallery} />
         <PlansSection
           overview
@@ -47,7 +47,7 @@ export function LandingPage() {
         <CoachesSection />
         <CoachEducationSection />
         <TransformationsSection items={data?.results} />
-        <TestimonialsSection items={data?.testimonials} locationId="tarapoto" />
+        <TestimonialsSection items={data?.testimonials} />
         <FaqSection />
       </main>
       <Footer />

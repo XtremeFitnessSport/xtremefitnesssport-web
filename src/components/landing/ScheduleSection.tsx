@@ -42,7 +42,7 @@ export function ScheduleSection({ classItems, student, weeklySchedules, overview
         </div>
         {overview ? (
           <div className="border border-white/10 bg-white/[0.03] p-5 sm:p-7">
-            <p className="mb-4 text-copy text-body">Horario de atención de referencia · Tarapoto</p>
+            <p className="mb-4 text-copy text-body">Horario de atención de referencia · Tarapoto{locationId === "pucallpa" ? ". Confirma los horarios de Pucallpa con el equipo." : ""}</p>
             <dl className="grid gap-4 sm:grid-cols-2">
               {schedule.slice(0, 2).map((item) => (
                 <div key={item.day} className="border-l-2 border-x-neon pl-4">

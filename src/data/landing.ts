@@ -5,7 +5,7 @@ export const portalUrl = process.env.NEXT_PUBLIC_PORTAL_URL ?? 'https://xtremefi
 export const navLinks = [
   { label: 'El gimnasio', href: '/#galeria' },
   { label: 'Planes', href: '/planes' },
-  { label: 'Horarios', href: '/#horarios-clases' },
+  { label: 'Horarios', href: '/planes/#horarios-clases' },
   { label: 'Coaches', href: '/#coaches' },
   { label: 'Sedes', href: '/sedes' },
 ];

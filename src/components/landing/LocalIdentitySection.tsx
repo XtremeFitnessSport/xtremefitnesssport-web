@@ -11,7 +11,8 @@ export function LocalIdentitySection({ locationId: featuredLocationId }: { locat
 
   return (
     <section id="energia" className="relative overflow-hidden bg-x-black py-20 sm:py-28 lg:py-32">
-      <div className="amazon-pattern absolute right-0 top-0 h-full w-1/3 opacity-10" />
+      <Image src={images.heroAthlete} alt="" fill sizes="100vw" className="object-cover object-center opacity-25 grayscale" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black via-black/85 to-black/60" />
       <div className="relative z-10 mx-auto flex max-w-7xl flex-col items-center gap-12 px-4 sm:px-6 md:flex-row lg:gap-16">
         <div className="w-full md:w-1/2">
           <div className="mb-6 inline-block bg-white/10 px-4 py-1 font-playful text-x-neon">

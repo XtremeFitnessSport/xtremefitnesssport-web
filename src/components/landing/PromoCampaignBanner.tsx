@@ -19,7 +19,7 @@ export function PromoCampaignBanner({ campaign, packs }: PromoCampaignBannerProp
   const whatsappText = `Hola, quiero información sobre la promoción “${campaign.title}” en la sede de ${location.city}.`;
 
   return (
-    <section className="relative overflow-hidden border-y border-x-neon/50 bg-x-neon/[0.07] px-4 py-10 sm:px-6" id="promocion-activa">
+    <section className="relative overflow-hidden border-y border-x-neon/50 bg-black px-4 py-10 sm:px-6" id="promocion-activa">
       <div className="absolute -right-20 -top-28 h-72 w-72 rounded-full bg-x-neon/20 blur-3xl" />
       <div className="relative mx-auto grid max-w-7xl gap-7 lg:grid-cols-[1fr_auto] lg:items-center">
         <div>
