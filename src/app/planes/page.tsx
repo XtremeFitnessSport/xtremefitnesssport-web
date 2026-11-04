@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     url: "/planes/",
     images: [
       {
-        url: "/opengraph-image",
+        url: "/opengraph-image?v=logo",
         width: 1200,
         height: 630,
         alt: "Planes y horarios Xtreme Fitness en Tarapoto y Pucallpa",

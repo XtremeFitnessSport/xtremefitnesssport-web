@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description,
       url: `/sedes/${city}/`,
-      images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
+      images: [{ url: "/opengraph-image?v=logo", width: 1200, height: 630 }],
     },
   };
 }

@@ -80,7 +80,7 @@ export const metadata: Metadata = {
       "Máquinas, precios claros y entrenamiento con guía para todos los niveles. Conoce nuestras sedes en la Amazonía peruana.",
     images: [
       {
-        url: "/opengraph-image",
+        url: "/opengraph-image?v=logo",
         width: 1200,
         height: 630,
         alt: "Xtreme Fitness: gimnasio y entrenamiento para todos los niveles en Tarapoto y Pucallpa, Perú",
@@ -92,7 +92,7 @@ export const metadata: Metadata = {
     title: "Xtreme Fitness | Tarapoto y Pucallpa",
     description:
       "Gimnasios en Tarapoto y Pucallpa con fuerza, músculo y entrenamiento semipersonalizado.",
-    images: ["/opengraph-image"],
+    images: ["/opengraph-image?v=logo"],
   },
   robots: {
     index: true,

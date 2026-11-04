@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Sedes Xtreme Fitness | Tarapoto y Pucallpa",
     url: "/sedes/",
-    images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
+    images: [{ url: "/opengraph-image?v=logo", width: 1200, height: 630 }],
   },
 };
 export default function SedesPage() {
